@@ -1,0 +1,46 @@
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 90%;
+  max-width: 600px;
+  margin: 50px auto;
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 0 10px #ccc;
+}
+
+.auth-forms {
+  display: flex;
+  justify-content: space-between;
+}
+
+form {
+  width: 45%;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #002254;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+```
+
