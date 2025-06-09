@@ -925,6 +925,198 @@ footer {
     </div>
 </body>
 </html>
+        <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Boy Who Met Sasabosa</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e6f3ff;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+        .cover {
+            text-align: center;
+            padding: 50px;
+            background-color: #ffcc00;
+            color: #333;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .cover h1 {
+            font-size: 50px;
+            margin: 0;
+            text-shadow: 2px 2px #fff;
+        }
+        .cover p {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        h2 {
+            color: #ff6600;
+            border-bottom: 3px solid #ff6600;
+            padding-bottom: 5px;
+            font-size: 28px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .chapter, .contents, .activities {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .chapter p {
+            line-height: 1.6;
+            font-size: 18px;
+        }
+        .contents ul {
+            list-style: none;
+            padding: 0;
+        }
+        .contents ul li {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .contents ul li a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .contents ul li a:hover {
+            text-decoration: underline;
+        }
+        .activities .activity {
+            background-color: #e6ffe6;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        img {
+            max-width: 150px;
+            border-radius: 10px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cover Page -->
+        <div class="cover">
+            <h1>The Boy Who Met Sasabosa</h1>
+            <p>A Magical Adventure Story</p>
+            <p>FAITH MASTERMIND ACADEMY</p>
+            <img src="https://via.placeholder.com/150?text=Sasabosa" alt="Sasabosa Illustration">
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="section contents">
+            <h2>Contents</h2>
+            <ul>
+                <li><a href="#chapter1">Chapter 1: The Forest Path</a></li>
+                <li><a href="#chapter2">Chapter 2: Meeting Sasabosa</a></li>
+                <li><a href="#chapter3">Chapter 3: The Hidden Valley</a></li>
+                <li><a href="#activities">Fun Activities</a></li>
+            </ul>
+        </div>
+
+        <!-- Chapter 1: The Forest Path -->
+        <div class="section chapter" id="chapter1">
+            <h2>Chapter 1: The Forest Path</h2>
+            <p>Once upon a time, there was a boy named Salifu. He lived in a small village surrounded by tall trees. One sunny morning, Salifu decided to explore the forest near his home.</p>
+            <p>As he walked, he heard birds singing and saw squirrels chasing each other. The path was covered with soft green moss. Salifu felt happy and curious. "What will I find today?" he wondered.</p>
+            <img src="https://via.placeholder.com/150?text=Forest" alt="Forest Path">
+            <p>Suddenly, he saw a shiny blue stone on the ground. It sparkled in the sunlight. Salifu picked it up and felt a warm tingle in his hand. "This is no ordinary stone," he said to himself.</p>
+        </div>
+
+        <!-- Chapter 2: Meeting Sasabosa -->
+        <div class="section chapter" id="chapter2">
+            <h2>Chapter 2: Meeting Sasabosa</h2>
+            <p>Salifu kept walking, holding the blue stone tightly. The forest grew quieter, and the air felt magical. Then, he heard a soft giggle. "Who's there?" Eli called out.</p>
+            <p>From behind a big tree, a creature appeared. It was fluffy, with bright green fur and big round eyes. "Hello! I'm Sasabosa!" it said, bouncing with excitement. Salifu smiled. "I'm Salifu. What's a Sasabosa?"</p>
+            <img src="https://via.placeholder.com/150?text=Sasabosa" alt="Sasabosa">
+            <p>Sasabosa laughed. "I'm a friend of the forest! That stone you found is special. It brought you to me. Want to see something amazing?" Salifu nodded eagerly.</p>
+        </div>
+
+        <!-- Chapter 3: The Hidden Valley -->
+        <div class="section chapter" id="chapter3">
+            <h2>Chapter 3: The Hidden Valley</h2>
+            <p>Sasabosa led Salifu through a secret tunnel under a giant tree. They came out in a hidden valley filled with colorful flowers and glowing butterflies. "Welcome to my home!" said Sasabosa.</p>
+            <p>Eli saw tiny houses made of leaves and a sparkling river. Sasabosa showed him how to make a flower crown. They played and laughed all day. "This is the best adventure ever!" Salifu said.</p>
+            <img src="https://via.placeholder.com/150?text=Valley" alt="Hidden Valley">
+            <p>As the sun set, Sasabosa gave Salifu a small green leaf. "Keep this to remember me," it said. Salifu promised to visit again. He waved goodbye and walked home, his heart full of joy.</p>
+            <p><strong>The End</strong></p>
+        </div>
+
+        <!-- Fun Activities -->
+        <div class="section activities" id="activities">
+            <h2>Fun Activities</h2>
+            <div class="activity">
+                <h3>Activity 1: Draw Sasabosa</h3>
+                <p>Draw a picture of Sasabosa. What color is its fur? What kind of eyes does it have? Use your imagination!</p>
+            </div>
+            <div class="activity">
+                <h3>Activity 2: Write a Letter</h3>
+                <p>Write a letter to Sasabosa. Tell it about your favorite part of the story or what you would do in the hidden valley.</p>
+            </div>
+            <div class="activity">
+                <h3>Activity 3: Story Continuation</h3>
+                <p>Write a short story about Eli's next visit to Sasabosa. What new adventure do they have?</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
         
 <div class="menu" id="menu">
   <div onclick="showContent('about')">ABOUT</div>
