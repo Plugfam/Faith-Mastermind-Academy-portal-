@@ -1381,8 +1381,1005 @@ footer {
             background-color: #f5f5f5;
             padding: 20px;
 
-</head>    
+  <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .subject {
+      margin-bottom: 30px;
+    }
+    .question {
+      margin: 15px 0;
+      color: red;
+      font-weight: bold;
+    }
+    .options {
+      margin-left: 20px;
+    }
+    .option {
+      color: red;
+      cursor: pointer;
+      padding: 5px;
+      margin: 5px 0;
+      display: block;
+    }
+    .option:hover {
+      background-color: #ddd;
+    }
+    .correct {
+      color: green !important;
+      font-weight: bold;
+    }
+    .wrong {
+      color: red !important;
+      font-weight: bold;
+    }
+    .feedback {
+      margin-left: 20px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <h1>Faith Mastermind Academy Quiz</h1>
+  
+  <!-- Science Section -->
+  <div class="subject">
+    <h2>Science</h2>
+    <div class="question" data-answer="Oxygen">1. What gas do humans need to breathe to survive?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Oxygen')">Oxygen</div>
+      <div class="option" onclick="checkAnswer(this, 'Oxygen')">Carbon Dioxide</div>
+      <div class="option" onclick="checkAnswer(this, 'Oxygen')">Nitrogen</div>
+      <div class="option" onclick="checkAnswer(this, 'Oxygen')">Helium</div>
+    </div>
+    <div class="question" data-answer="Roots">2. Which part of a plant absorbs water from the soil?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Roots')">Roots</div>
+      <div class="option" onclick="checkAnswer(this, 'Roots')">Leaves</div>
+      <div class="option" onclick="checkAnswer(this, 'Roots')">Stem</div>
+      <div class="option" onclick="checkAnswer(this, 'Roots')">Flower</div>
+    </div>
+    <div class="question" data-answer="Solid">3. What state of matter has a definite shape and volume?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Solid')">Solid</div>
+      <div class="option" onclick="checkAnswer(this, 'Solid')">Liquid</div>
+      <div class="option" onclick="checkAnswer(this, 'Solid')">Gas</div>
+      <div class="option" onclick="checkAnswer(this, 'Solid')">Plasma</div>
+    </div>
+    <div class="question" data-answer="Sun">4. What is the primary source of energy for Earth?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Sun')">Sun</div>
+      <div class="option" onclick="checkAnswer(this, 'Sun')">Moon</div>
+      <div class="option" onclick="checkAnswer(this, 'Sun')">Wind</div>
+      <div class="option" onclick="checkAnswer(this, 'Sun')">Water</div>
+    </div>
+    <div class="question" data-answer="Mammals">5. Which group of animals gives birth to live young and feeds them milk?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Mammals')">Mammals</div>
+      <div class="option" onclick="checkAnswer(this, 'Mammals')">Reptiles</div>
+      <div class="option" onclick="checkAnswer(this, 'Mammals')">Amphibians</div>
+      <div class="option" onclick="checkAnswer(this, 'Mammals')">Birds</div>
+    </div>
+    <div class="question" data-answer="Photosynthesis">6. What process do plants use to make food using sunlight?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Photosynthesis')">Photosynthesis</div>
+      <div class="option" onclick="checkAnswer(this, 'Photosynthesis')">Respiration</div>
+      <div class="option" onclick="checkAnswer(this, 'Photosynthesis')">Digestion</div>
+      <div class="option" onclick="checkAnswer(this, 'Photosynthesis')">Evaporation</div>
+    </div>
+    <div class="question" data-answer="Gravity">7. What force keeps objects on the ground?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Gravity')">Gravity</div>
+      <div class="option" onclick="checkAnswer(this, 'Gravity')">Magnetism</div>
+      <div class="option" onclick="checkAnswer(this, 'Gravity')">Friction</div>
+      <div class="option" onclick="checkAnswer(this, 'Gravity')">Tension</div>
+    </div>
+    <div class="question" data-answer="Heart">8. Which organ pumps blood throughout the body?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Heart')">Heart</div>
+      <div class="option" onclick="checkAnswer(this, 'Heart')">Lungs</div>
+      <div class="option" onclick="checkAnswer(this, 'Heart')">Liver</div>
+      <div class="option" onclick="checkAnswer(this, 'Heart')">Kidneys</div>
+    </div>
+    <div class="question" data-answer="Water">9. What is the most abundant substance on Earth's surface?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Water')">Water</div>
+      <div class="option" onclick="checkAnswer(this, 'Water')">Sand</div>
+      <div class="option" onclick="checkAnswer(this, 'Water')">Rock</div>
+      <div class="option" onclick="checkAnswer(this, 'Water')">Air</div>
+    </div>
+    <div class="question" data-answer="Vertebrates">10. Animals with a backbone are called?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Vertebrates')">Vertebrates</div>
+      <div class="option" onclick="checkAnswer(this, 'Vertebrates')">Invertebrates</div>
+      <div class="option" onclick="checkAnswer(this, 'Vertebrates')">Arthropods</div>
+      <div class="option" onclick="checkAnswer(this, 'Vertebrates')">Mollusks</div>
+    </div>
+    <div class="question" data-answer="Evaporation">11. What process turns liquid water into water vapor?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Evaporation')">Evaporation</div>
+      <div class="option" onclick="checkAnswer(this, 'Evaporation')">Condensation</div>
+      <div class="option" onclick="checkAnswer(this, 'Evaporation')">Precipitation</div>
+      <div class="option" onclick="checkAnswer(this, 'Evaporation')">Sublimation</div>
+    </div>
+    <div class="question" data-answer="Lungs">12. Which organ is responsible for breathing?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Lungs')">Lungs</div>
+      <div class="option" onclick="checkAnswer(this, 'Lungs')">Heart</div>
+      <div class="option" onclick="checkAnswer(this, 'Lungs')">Stomach</div>
+      <div class="option" onclick="checkAnswer(this, 'Lungs')">Brain</div>
+    </div>
+    <div class="question" data-answer="Moon">13. What causes tides on Earth?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Moon')">Moon</div>
+      <div class="option" onclick="checkAnswer(this, 'Moon')">Sun</div>
+      <div class="option" onclick="checkAnswer(this, 'Moon')">Wind</div>
+      <div class="option" onclick="checkAnswer(this, 'Moon')">Clouds</div>
+    </div>
+    <div class="question" data-answer="Chlorophyll">14. What gives plants their green color?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Chlorophyll')">Chlorophyll</div>
+      <div class="option" onclick="checkAnswer(this, 'Chlorophyll')">Carotene</div>
+      <div class="option" onclick="checkAnswer(this, 'Chlorophyll')">Xanthophyll</div>
+      <div class="option" onclick="checkAnswer(this, 'Chlorophyll')">Anthocyanin</div>
+    </div>
+    <div class="question" data-answer="Friction">15. What force slows down moving objects?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Friction')">Friction</div>
+      <div class="option" onclick="checkAnswer(this, 'Friction')">Gravity</div>
+      <div class="option" onclick="checkAnswer(this, 'Friction')">Magnetism</div>
+      <div class="option" onclick="checkAnswer(this, 'Friction')">Inertia</div>
+    </div>
+    <div class="question" data-answer="Reproduction">16. What process allows living things to produce offspring?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Reproduction')">Reproduction</div>
+      <div class="option" onclick="checkAnswer(this, 'Reproduction')">Respiration</div>
+      <div class="option" onclick="checkAnswer(this, 'Reproduction')">Digestion</div>
+      <div class="option" onclick="checkAnswer(this, 'Reproduction')">Circulation</div>
+    </div>
+    <div class="question" data-answer="Skeleton">17. What provides structure and support to the human body?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Skeleton')">Skeleton</div>
+      <div class="option" onclick="checkAnswer(this, 'Skeleton')">Muscles</div>
+      <div class="option" onclick="checkAnswer(this, 'Skeleton')">Skin</div>
+      <div class="option" onclick="checkAnswer(this, 'Skeleton')">Blood</div>
+    </div>
+    <div class="question" data-answer="Condensation">18. What process forms clouds from water vapor?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Condensation')">Condensation</div>
+      <div class="option" onclick="checkAnswer(this, 'Condensation')">Evaporation</div>
+      <div class="option" onclick="checkAnswer(this, 'Condensation')">Precipitation</div>
+      <div class="option" onclick="checkAnswer(this, 'Condensation')">Sublimation</div>
+    </div>
+    <div class="question" data-answer="Herbivores">19. Animals that eat only plants are called?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Herbivores')">Herbivores</div>
+      <div class="option" onclick="checkAnswer(this, 'Herbivores')">Carnivores</div>
+      <div class="option" onclick="checkAnswer(this, 'Herbivores')">Omnivores</div>
+      <div class="option" onclick="checkAnswer(this, 'Herbivores')">Scavengers</div>
+    </div>
+    <div class="question" data-answer="Electricity">20. What form of energy powers a light bulb?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Electricity')">Electricity</div>
+      <div class="option" onclick="checkAnswer(this, 'Electricity')">Heat</div>
+      <div class="option" onclick="checkAnswer(this, 'Electricity')">Sound</div>
+      <div class="option" onclick="checkAnswer(this, 'Electricity')">Light</div>
+    </div>
+  </div>
+
+  <!-- RME Section -->
+  <div class="subject">
+    <h2>Religious and Moral Education (RME)</h2>
+    <div class="question" data-answer="Honesty">1. What is the virtue of telling the truth?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Honesty')">Honesty</div>
+      <div class="option" onclick="checkAnswer(this, 'Honesty')">Courage</div>
+      <div class="option" onclick="checkAnswer(this, 'Honesty')">Kindness</div>
+      <div class="option" onclick="checkAnswer(this, 'Honesty')">Patience</div>
+    </div>
+    <div class="question" data-answer="Bible">2. What is the holy book of Christianity?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Bible')">Bible</div>
+      <div class="option" onclick="checkAnswer(this, 'Bible')">Quran</div>
+      <div class="option" onclick="checkAnswer(this, 'Bible')">Torah</div>
+      <div class="option" onclick="checkAnswer(this, 'Bible')">Vedas</div>
+    </div>
+    <div class="question" data-answer="Quran">3. What is the holy book of Islam?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Quran')">Quran</div>
+      <div class="option" onclick="checkAnswer(this, 'Quran')">Bible</div>
+      <div class="option" onclick="checkAnswer(this, 'Quran')">Torah</div>
+      <div class="option" onclick="checkAnswer(this, 'Quran')">Gita</div>
+    </div>
+    <div class="question" data-answer="Respect">4. What value involves treating others with dignity?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Respect')">Respect</div>
+      <div class="option" onclick="checkAnswer(this, 'Respect')">Anger</div>
+      <div class="option" onclick="checkAnswer(this, 'Respect')">Fear</div>
+      <div class="option" onclick="checkAnswer(this, 'Respect')">Pride</div>
+    </div>
+    <div class="question" data-answer="Church">5. Where do Christians go to worship?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Church')">Church</div>
+      <div class="option" onclick="checkAnswer(this, 'Church')">Mosque</div>
+      <div class="option" onclick="checkAnswer(this, 'Church')">Temple</div>
+      <div class="option" onclick="checkAnswer(this, 'Church')">Synagogue</div>
+    </div>
+    <div class="question" data-answer="Mosque">6. Where do Muslims go to pray?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Mosque')">Mosque</div>
+      <div class="option" onclick="checkAnswer(this, 'Mosque')">Church</div>
+      <div class="option" onclick="checkAnswer(this, 'Mosque')">Temple</div>
+      <div class="option" onclick="checkAnswer(this, 'Mosque')">Shrine</div>
+    </div>
+    <div class="question" data-answer="Kindness">7. What is showing care and concern for others called?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Kindness')">Kindness</div>
+      <div class="option" onclick="checkAnswer(this, 'Kindness')">Greed</div>
+      <div class="option" onclick="checkAnswer(this, 'Kindness')">Jealousy</div>
+      <div class="option" onclick="checkAnswer(this, 'Kindness')">Hatred</div>
+    </div>
+    <div class="question" data-answer="Prayer">8. What is talking to God called?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Prayer')">Prayer</div>
+      <div class="option" onclick="checkAnswer(this, 'Prayer')">Singing</div>
+      <div class="option" onclick="checkAnswer(this, 'Prayer')">Dancing</div>
+      <div class="option" onclick="checkAnswer(this, 'Prayer')">Reading</div>
+    </div>
+    <div class="question" data-answer="Forgiveness">9. What is letting go of anger towards someone who wronged you?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Forgiveness')">Forgiveness</div>
+      <div class="option" onclick="checkAnswer(this, 'Forgiveness')">Revenge</div>
+      <div class="option" onclick="checkAnswer(this, 'Forgiveness')">Punishment</div>
+      <div class="option" onclick="checkAnswer(this, 'Forgiveness')">Hatred</div>
+    </div>
+    <div class="question" data-answer="Ramadan">10. What is the Islamic month of fasting?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Ramadan')">Ramadan</div>
+      <div class="option" onclick="checkAnswer(this, 'Ramadan')">Eid</div>
+      <div class="option" onclick="checkAnswer(this, 'Ramadan')">Hajj</div>
+      <div class="option" onclick="checkAnswer(this, 'Ramadan')">Diwali</div>
+    </div>
+    <div class="question" data-answer="Christmas">11. What Christian festival celebrates the birth of Jesus?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Christmas')">Christmas</div>
+      <div class="option" onclick="checkAnswer(this, 'Christmas')">Easter</div>
+      <div class="option" onclick="checkAnswer(this, 'Christmas')">Pentecost</div>
+      <div class="option" onclick="checkAnswer(this, 'Christmas')">Lent</div>
+    </div>
+    <div class="question" data-answer="Responsibility">12. What is doing your duties properly called?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Responsibility')">Responsibility</div>
+      <div class="option" onclick="checkAnswer(this, 'Responsibility')">Laziness</div>
+      <div class="option" onclick="checkAnswer(this, 'Responsibility')">Carelessness</div>
+      <div class="option" onclick="checkAnswer(this, 'Responsibility')">Dishonesty</div>
+    </div>
+    <div class="question" data-answer="Eid al-Fitr">13. What festival marks the end of Ramadan?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Eid al-Fitr')">Eid al-Fitr</div>
+      <div class="option" onclick="checkAnswer(this, 'Eid al-Fitr')">Eid al-Adha</div>
+      <div class="option" onclick="checkAnswer(this, 'Eid al-Fitr')">Hajj</div>
+      <div class="option" onclick="checkAnswer(this, 'Eid al-Fitr')">Muharram</div>
+    </div>
+    <div class="question" data-answer="Easter">14. What Christian festival celebrates the resurrection of Jesus?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Easter')">Easter</div>
+      <div class="option" onclick="checkAnswer(this, 'Easter')">Christmas</div>
+      <div class="option" onclick="checkAnswer(this, 'Easter')">Pentecost</div>
+      <div class="option" onclick="checkAnswer(this, 'Easter')">Advent</div>
+    </div>
+    <div class="question" data-answer="Humility">15. What is the quality of not being proud or boastful?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Humility')">Humility</div>
+      <div class="option" onclick="checkAnswer(this, 'Humility')">Pride</div>
+      <div class="option" onclick="checkAnswer(this, 'Humility')">Arrogance</div>
+      <div class="option" onclick="checkAnswer(this, 'Humility')">Selfishness</div>
+    </div>
+    <div class="question" data-answer="Charity">16. What is giving help to those in need called?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Charity')">Charity</div>
+      <div class="option" onclick="checkAnswer(this, 'Charity')">Greed</div>
+      <div class="option" onclick="checkAnswer(this, 'Charity')">Selfishness</div>
+      <div class="option" onclick="checkAnswer(this, 'Charity')">Envy</div>
+    </div>
+    <div class="question" data-answer="Synagogue">17. Where do Jewish people go to worship?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Synagogue')">Synagogue</div>
+      <div class="option" onclick="checkAnswer(this, 'Synagogue')">Church</div>
+      <div class="option" onclick="checkAnswer(this, 'Synagogue')">Mosque</div>
+      <div class="option" onclick="checkAnswer(this, 'Synagogue')">Temple</div>
+    </div>
+    <div class="question" data-answer="Patience">18. What is waiting calmly without complaining called?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Patience')">Patience</div>
+      <div class="option" onclick="checkAnswer(this, 'Patience')">Anger</div>
+      <div class="option" onclick="checkAnswer(this, 'Patience')">Haste</div>
+      <div class="option" onclick="checkAnswer(this, 'Patience')">Laziness</div>
+    </div>
+    <div class="question" data-answer="Ten Commandments">19. What are the rules given to Moses by God called?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Ten Commandments')">Ten Commandments</div>
+      <div class="option" onclick="checkAnswer(this, 'Ten Commandments')">Golden Rules</div>
+      <div>      <div class="option" onclick="checkAnswer(this, 'Ten Commandments')">Five Pillars</div>
+      <div class="option" onclick="checkAnswer(this, 'Ten Commandments')">Noble Truths</div>
+    </div>
+    <div class="question" data-answer="Hajj">20. What is the Islamic pilgrimage to Mecca?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Hajjaj')">Hajj</div>
+      <div class="option" onclick="checkAnswer(this, 'Option')"> Ramadan</div>
+      <div class="option" onclick="checkAnswer(this, 'Hajj') ">Eid</div>
+      <div class="option" onclick="checkAnswer(this, 'Hajj')">Salah</div>
+    </div>
+  </div>
+
+  <!-- English Section -->
+  <div class="subject">
+    <h2>English</h2>
+    <div class="question" data-answer="Noun">1. What is a naming word?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Noun')">Noun</div>
+      <div class="option" onclick="checkAnswer(this, 'Noun')">Verb</div>
+      <div class="option" onclick="checkAnswer(this, 'Noun')">Adjective</div>
+      <div class="option" onclick="checkAnswer(this, 'Noun')">Adverb</div>
+    </div>
+    <div class="question" data-answer="Verb">2. What is an action word?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Verb')">Verb</div>
+      <div class="option" onclick="checkAnswer(this, 'Verb')">Noun</div>
+      <div class="option" onclick="checkAnswer(this, 'Verb')">Pronoun</div>
+      <div class="option" onclick="checkAnswer(this, 'Verb')">Preposition</div>
+    </div>
+    <div class="question" data-answer="Adjective">3. What describes a noun?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Adjective')">Adjective</div>
+      <div class="option" onclick="checkAnswer(this, 'Adjective')">Adverb</div>
+      <div class="option" onclick="checkAnswer(this, 'Adjective')">Verb</div>
+      <div class="option" onclick="checkAnswer(this, 'Adjective')">Conjunction</div>
+    </div>
+    <div class="question" data-answer="Adverb">4. What describes a verb?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Adverb')">Adverb</div>
+      <div class="option" onclick="checkAnswer(this, 'Adverb')">Adjective</div>
+      <div class="option" onclick="checkAnswer(this, 'Adverb')">Noun</div>
+      <div class="option" onclick="checkAnswer(this, 'Adverb')">Pronoun</div>
+    </div>
+    <div class="question" data-answer="Pronoun">5. What replaces a noun in a sentence?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Pronoun')">Pronoun</div>
+      <div class="option" onclick="checkAnswer(this, 'Pronoun')">Verb</div>
+      <div class="option" onclick="checkAnswer(this, 'Pronoun')">Adjective</div>
+      <div class="option" onclick="checkAnswer(this, 'Pronoun')">Conjunction</div>
+    </div>
+    <div class="question" data-answer="Full Stop">6. What punctuation mark ends a sentence?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Full Stop')">Full Stop</div>
+      <div class="option" onclick="checkAnswer(this, 'Full Stop')">Comma</div>
+      <div class="option" onclick="checkAnswer(this, 'Full Stop')">Question Mark</div>
+      <div class="option" onclick="checkAnswer(this, 'Full Stop')">Exclamation Mark</div>
+    </div>
+    <div class="question" data-answer="Synonym">7. What is a word with a similar meaning?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Synonym')">Synonym</div>
+      <div class="option" onclick="checkAnswer(this, 'Synonym')">Antonym</div>
+      <div class="option" onclick="checkAnswer(this, 'Synonym')">Homophone</div>
+      <div class="option" onclick="checkAnswer(this, 'Synonym')">Adjective</div>
+    </div>
+    <div class="question" data-answer="Antonym">8. What is a word with an opposite meaning?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Antonym')">Antonym</div>
+      <div class="option" onclick="checkAnswer(this, 'Antonym')">Synonym</div>
+      <div class="option" onclick="checkAnswer(this, 'Antonym')">Homonym</div>
+      <div class="option" onclick="checkAnswer(this, 'Antonym')">Verb</div>
+    </div>
+    <div class="question" data-answer="Question Mark">9. What punctuation mark is used for a question?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Question Mark')">Question Mark</div>
+      <div class="option" onclick="checkAnswer(this, 'Question Mark')">Full Stop</div>
+      <div class="option" onclick="checkAnswer(this, 'Question Mark')">Comma</div>
+      <div class="option" onclick="checkAnswer(this, 'Question Mark')">Exclamation Mark</div>
+    </div>
+    <div class="question" data-answer="Comma">10. What separates items in a list?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Comma')">Comma</div>
+      <div class="option" onclick="checkAnswer(this, 'Comma')">Full Stop</div>
+      <div class="option" onclick="checkAnswer(this, 'Comma')">Question Mark</div>
+      <div class="option" onclick="checkAnswer(this, 'Comma')">Semicolon</div>
+    </div>
+    <div class="question" data-answer="Sentence">11. What is a group of words that expresses a complete thought?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Sentence')">Sentence</div>
+      <div class="option" onclick="checkAnswer(this, 'Sentence')">Phrase</div>
+      <div class="option" onclick="checkAnswer(this, 'Sentence')">Clause</div>
+      <div class="option" onclick="checkAnswer(this, 'Sentence')">Word</div>
+    </div>
+    <div class="question" data-answer="Subject">12. What is the part of a sentence that tells who or what?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Subject')">Subject</div>
+      <div class="option" onclick="checkAnswer(this, 'Subject')">Predicate</div>
+      <div class="option" onclick="checkAnswer(this, 'Subject')">Object</div>
+      <div class="option" onclick="checkAnswer(this, 'Subject')">Verb</div>
+    </div>
+    <div class="question" data-answer="Predicate">13. What is the part of a sentence that tells what the subject does?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Predicate')">Predicate</div>
+      <div class="option" onclick="checkAnswer(this, 'Predicate')">Subject</div>
+      <div class="option" onclick="checkAnswer(this, 'Predicate')">Object</div>
+      <div class="option" onclick="checkAnswer(this, 'Predicate')">Adjective</div>
+    </div>
+    <div class="question" data-answer="Conjunction">14. What joins words or groups of words?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Conjunction')">Conjunction</div>
+      <div class="option" onclick="checkAnswer(this, 'Conjunction')">Preposition</div>
+      <div class="option" onclick="checkAnswer(this, 'Conjunction')">Pronoun</div>
+      <div class="option" onclick="checkAnswer(this, 'Conjunction')">Adverb</div>
+    </div>
+    <div class="question" data-answer="Preposition">15. What shows the relationship of a noun to another word?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Preposition')">Preposition</div>
+      <div class="option" onclick="checkAnswer(this, 'Preposition')">Conjunction</div>
+      <div class="option" onclick="checkAnswer(this, 'Preposition')">Adverb</div>
+      <div class="option" onclick="checkAnswer(this, 'Preposition')">Adjective</div>
+    </div>
+    <div class="question" data-answer="Exclamation Mark">16. What punctuation mark shows strong emotion?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Exclamation Mark')">Exclamation Mark</div>
+      <div class="option" onclick="checkAnswer(this, 'Exclamation Mark')">Question Mark</div>
+      <div class="option" onclick="checkAnswer(this, 'Exclamation Mark')">Comma</div>
+      <div class="option" onclick="checkAnswer(this, 'Exclamation Mark')">Full Stop</div>
+    </div>
+    <div class="question" data-answer="Homophone">17. What is a word that sounds the same but has a different meaning?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Homophone')">Homophone</div>
+      <div class="option" onclick="checkAnswer(this, 'Homophone')">Synonym</div>
+      <div class="option" onclick="checkAnswer(this, 'Homophone')">Antonym</div>
+      <div class="option" onclick="checkAnswer(this, 'Homophone')">Adjective</div>
+    </div>
+    <div class="question" data-answer="Plural">18. What form of a noun refers to more than one?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Plural')">Plural</div>
+      <div class="option" onclick="checkAnswer(this, 'Plural')">Singular</div>
+      <div class="option" onclick="checkAnswer(this, 'Plural')">Verb</div>
+      <div class="option" onclick="checkAnswer(this, 'Plural')">Adjective</div>
+    </div>
+    <div class="question" data-answer="Apostrophe">19. What punctuation mark shows possession?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Apostrophe')">Apostrophe</div>
+      <div class="option" onclick="checkAnswer(this, 'Apostrophe')">Comma</div>
+      <div class="option" onclick="checkAnswer(this, 'Apostrophe')">Full Stop</div>
+      <div class="option" onclick="checkAnswer(this, 'Apostrophe')">Question Mark</div>
+    </div>
+    <div class="question" data-answer="Paragraph">20. What is a group of sentences about one topic?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Paragraph')">Paragraph</div>
+      <div class="option" onclick="checkAnswer(this, 'Paragraph')">Sentence</div>
+      <div class="option" onclick="checkAnswer(this, 'Paragraph')">Word</div>
+      <div class="option" onclick="checkAnswer(this, 'Paragraph')">Phrase</div>
+    </div>
+  </div>
+
+  <!-- Maths Section -->
+  <div class="subject">
+    <h2>Maths</h2>
+    <div class="question" data-answer="2">1. What is 1 + 1?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '2')">2</div>
+      <div class="option" onclick="checkAnswer(this, '2')">3</div>
+      <div class="option" onclick="checkAnswer(this, '2')">1</div>
+      <div class="option" onclick="checkAnswer(this, '2')">4</div>
+    </div>
+    <div class="question" data-answer="6">2. What is 3 + 3?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '6')">6</div>
+      <div class="option" onclick="checkAnswer(this, '6')">5</div>
+      <div class="option" onclick="checkAnswer(this, '6')">7</div>
+      <div class="option" onclick="checkAnswer(this, '6')">4</div>
+    </div>
+    <div class="question" data-answer="4">3. What is 8 - 4?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '4')">4</div>
+      <div class="option" onclick="checkAnswer(this, '4')">3</div>
+      <div class="option" onclick="checkAnswer(this, '4')">5</div>
+      <div class="option" onclick="checkAnswer(this, '4')">2</div>
+    </div>
+    <div class="question" data-answer="6">4. What is 2 × 3?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '6')">6</div>
+      <div class="option" onclick="checkAnswer(this, '6')">5</div>
+      <div class="option" onclick="checkAnswer(this, '6')">8</div>
+      <div class="option" onclick="checkAnswer(this, '6')">4</div>
+    </div>
+    <div class="question" data-answer="3">5. What is 9 ÷ 3?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '3')">3</div>
+      <div class="option" onclick="checkAnswer(this, '3')">2</div>
+      <div class="option" onclick="checkAnswer(this, '3')">4</div>
+      <div class="option" onclick="checkAnswer(this, '3')">6</div>
+    </div>
+    <div class="question" data-answer="Triangle">6. What shape has 3 sides?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Triangle')">Triangle</div>
+      <div class="option" onclick="checkAnswer(this, 'Triangle')">Square</div>
+      <div class="option" onclick="checkAnswer(this, 'Triangle')">Circle</div>
+      <div class="option" onclick="checkAnswer(this, 'Triangle')">Rectangle</div>
+    </div>
+    <div class="question" data-answer="Square">7. What shape has 4 equal sides?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Square')">Square</div>
+      <div class="option" onclick="checkAnswer(this, 'Square')">Rectangle</div>
+      <div class="option" onclick="checkAnswer(this, 'Square')">Triangle</div>
+      <div class="option" onclick="checkAnswer(this, 'Square')">Circle</div>
+    </div>
+    <div class="question" data-answer="10">8. What is 5 + 5?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '10')">10</div>
+      <div class="option" onclick="checkAnswer(this, '10')">9</div>
+      <div class="option" onclick="checkAnswer(this, '10')">11</div>
+      <div class="option" onclick="checkAnswer(this, '10')">8</div>
+    </div>
+    <div class="question" data-answer="2">9. What is 10 - 8?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '2')">2</div>
+      <div class="option" onclick="checkAnswer(this, '2')">3</div>
+      <div class="option" onclick="checkAnswer(this, '2')">1</div>
+      <div class="option" onclick="checkAnswer(this, '2')">4</div>
+    </div>
+    <div class="question" data-answer="8">10. What is 4 × 2?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '8')">8</div>
+      <div class="option" onclick="checkAnswer(this, '8')">6</div>
+      <div class="option" onclick="checkAnswer(this, '8')">10</div>
+      <div class="option" onclick="checkAnswer(this, '8')">7</div>
+    </div>
+    <div class="question" data-answer="4">11. What is 12 ÷ 3?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '4')">4</div>
+      <div class="option" onclick="checkAnswer(this, '4')">3</div>
+      <div class="option" onclick="checkAnswer(this, '4')">5</div>
+      <div class="option" onclick="checkAnswer(this, '4')">6</div>
+    </div>
+    <div class="question" data-answer="Circle">12. What shape has no sides?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Circle')">Circle</div>
+      <div class="option" onclick="checkAnswer(this, 'Circle')">Square</div>
+      <div class="option" onclick="checkAnswer(this, 'Circle')">Triangle</div>
+      <div class="option" onclick="checkAnswer(this, 'Circle')">Rectangle</div>
+    </div>
+    <div class="question" data-answer="7">13. What is 4 + 3?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '7')">7</div>
+      <div class="option" onclick="checkAnswer(this, '7')">6</div>
+      <div class="option" onclick="checkAnswer(this, '7')">8</div>
+      <div class="option" onclick="checkAnswer(this, '7')">5</div>
+    </div>
+    <div class="question" data-answer="5">14. What is 10 - 5?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '5')">5</div>
+      <div class="option" onclick="checkAnswer(this, '5')">4</div>
+      <div class="option" onclick="checkAnswer(this, '5')">6</div>
+      <div class="option" onclick="checkAnswer(this, '5')">3</div>
+    </div>
+    <div class="question" data-answer="12">15. What is 4 × 3?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '12')">12</div>
+      <div class="option" onclick="checkAnswer(this, '12')">10</div>
+      <div class="option" onclick="checkAnswer(this, '12')">14</div>
+      <div class="option" onclick="checkAnswer(this, '12')">9</div>
+    </div>
+    <div class="question" data-answer="5">16. What is 15 ÷ 3?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '5')">5</div>
+      <div class="option" onclick="checkAnswer(this, '5')">4</div>
+      <div class="option" onclick="checkAnswer(this, '5')">6</div>
+      <div class="option" onclick="checkAnswer(this, '5')">3</div>
+    </div>
+    <div class="question" data-answer="Rectangle">17. What shape has opposite sides equal and parallel?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Rectangle')">Rectangle</div>
+      <div class="option" onclick="checkAnswer(this, 'Rectangle')">Triangle</div>
+      <div class="option" onclick="checkAnswer(this, 'Rectangle')">Circle</div>
+      <div class="option" onclick="checkAnswer(this, 'Rectangle')">Pentagon</div>
+    </div>
+    <div class="question" data-answer="9">18. What is 6 + 3?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '9')">9</div>
+      <div class="option" onclick="checkAnswer(this, '9')">8</div>
+      <div class="option" onclick="checkAnswer(this, '9')">10</div>
+      <div class="option" onclick="checkAnswer(this, '9')">7</div>
+    </div>
+    <div class="question" data-answer="3">19. What is 6 - 3?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '3')">3</div>
+      <div class="option" onclick="checkAnswer(this, '3')">2</div>
+      <div class="option" onclick="checkAnswer(this, '3')">4</div>
+      <div class="option" onclick="checkAnswer(this, '3')">5</div>
+    </div>
+    <div class="question" data-answer="10">20. What is 5 × 2?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, '10')">10</div>
+      <div class="option" onclick="checkAnswer(this, '10')">8</div>
+      <div class="option" onclick="checkAnswer(this, '10')">12</div>
+      <div class="option" onclick="checkAnswer(this, '10')">9</div>
+    </div>
+  </div>
+
+  <!-- Creative Arts Section -->
+  <div class="subject">
+    <h2>Creative Arts</h2>
+    <div class="question" data-answer="Red">1. What is the color of a ripe apple?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Red')">Red</div>
+      <div class="option" onclick="checkAnswer(this, 'Red')">Blue</div>
+      <div class="option" onclick="checkAnswer(this, 'Red')">Green</div>
+      <div class="option" onclick="checkAnswer(this, 'Red')">Yellow</div>
+    </div>
+    <div class="question" data-answer="Blue">2. What color is the sky on a clear day?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Blue')">Blue</div>
+      <div class="option" onclick="checkAnswer(this, 'Blue')">Red</div>
+      <div class="option" onclick="checkAnswer(this, 'Blue')">Green</div>
+      <div class="option" onclick="checkAnswer(this, 'Blue')">Black</div>
+    </div>
+    <div class="question" data-answer="Drawing">3. What is creating a picture with a pencil called?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Drawing')">Drawing</div>
+      <div class="option" onclick="checkAnswer(this, 'Drawing')">Painting</div>
+      <div class="option" onclick="checkAnswer(this, 'Drawing')">Sculpting</div>
+      <div class="option" onclick="checkAnswer(this, 'Drawing')">Weaving</div>
+    </div>
+    <div class="question" data-answer="Painting">4. What is creating art with colors and a brush called?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Painting')">Painting</div>
+      <div class="option" onclick="checkAnswer(this, 'Painting')">Drawing</div>
+      <div class="option" onclick="checkAnswer(this, 'Painting')">Sculpting</div>
+      <div class="option" onclick="checkAnswer(this, 'Painting')">Dancing</div>
+    </div>
+    <div class="question" data-answer="Clay">5. What material is used to make pottery?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Clay')">Clay</div>
+      <div class="option" onclick="checkAnswer(this, 'Clay')">Wood</div>
+      <div class="option" onclick="checkAnswer(this, 'Clay')">Metal</div>
+      <div class="option" onclick="checkAnswer(this, 'Clay')">Paper</div>
+    </div>
+    <div class="question" data-answer="Dance">6. What is moving the body to music called?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Dance')">Dance</div>
+      <div class="option" onclick="checkAnswer(this, 'Dance')">Singing</div>
+      <div class="option" onclick="checkAnswer(this, 'Dance')">Painting</div>
+      <div class="option" onclick="checkAnswer(this, 'Dance')">Drawing</div>
+    </div>
+    <div class="question" data-answer="Singing">7. What is using the voice to make music called?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Singing')">Singing</div>
+      <div class="option" onclick="checkAnswer(this, 'Singing')">Dancing</div>
+      <div class="option" onclick="checkAnswer(this, 'Singing')">Painting</div>
+      <div class="option" onclick="checkAnswer(this, 'Singing')">Sculpting</div>
+    </div>
+    <div class="question" data-answer="Yellow">8. What is the color of a ripe banana?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Yellow')">Yellow</div>
+      <div class="option" onclick="checkAnswer(this, 'Yellow')">Red</div>
+      <div class="option" onclick="checkAnswer(this, 'Yellow')">Blue</div>
+      <div class="option" onclick="checkAnswer(this, 'Yellow')">Green</div>
+    </div>
+    <div class="question" data-answer="Sculpture">9. What is a 3D artwork made by carving or molding?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Sculpture')">Sculpture</div>
+      <div class="option" onclick="checkAnswer(this, 'Sculpture')">Painting</div>
+      <div class="option" onclick="checkAnswer(this, 'Sculpture')">Drawing</div>
+      <div class="option" onclick="checkAnswer(this, 'Sculpture')">Weaving</div>
+    </div>
+    <div class="question" data-answer="Music">10. What is the art of sound using instruments or voice?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Music')">Music</div>
+      <div class="option" onclick="checkAnswer(this, 'Music')">Dance</div>
+      <div class="option" onclick="checkAnswer(this, 'Music')">Painting</div>
+      <div class="option" onclick="checkAnswer(this, 'Music')">Sculpture</div>
+    </div>
+    <div class="question" data-answer="Green">11. What is the color of grass?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Green')">Green</div>
+      <div class="option" onclick="checkAnswer(this, 'Green')">Red</div>
+      <div class="option" onclick="checkAnswer(this, 'Green')">Blue</div>
+      <div class="option" onclick="checkAnswer(this, 'Green')">Yellow</div>
+    </div>
+    <div class="question" data-answer="Weaving">12. What is creating fabric by interlacing threads?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Weaving')">Weaving</div>
+      <div class="option" onclick="checkAnswer(this, 'Weaving')">Sculpting</div>
+      <div class="option" onclick="checkAnswer(this, 'Weaving')">Painting</div>
+      <div class="option" onclick="checkAnswer(this, 'Weaving')">Drawing</div>
+    </div>
+    <div class="question" data-answer="Drum">13. What is a musical instrument you hit to play?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Drum')">Drum</div>
+      <div class="option" onclick="checkAnswer(this, 'Drum')">Flute</div>
+      <div class="option" onclick="checkAnswer(this, 'Drum')">Guitar</div>
+      <div class="option" onclick="checkAnswer(this, 'Drum')">Piano</div>
+    </div>
+    <div class="question" data-answer="Orange">14. What is the color of a ripe orange?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Orange')">Orange</div>
+      <div class="option" onclick="checkAnswer(this, 'Orange')">Red</div>
+      <div class="option" onclick="checkAnswer(this, 'Orange')">Blue</div>
+      <div class="option" onclick="checkAnswer(this, 'Orange')">Green</div>
+    </div>
+    <div class="question" data-answer="Collage">15. What is an artwork made by sticking different materials together?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Collage')">Collage</div>
+      <div class="option" onclick="checkAnswer(this, 'Collage')">Sculpture</div>
+      <div class="option" onclick="checkAnswer(this, 'Collage')">Painting</div>
+      <div class="option" onclick="checkAnswer(this, 'Collage')">Drawing</div>
+    </div>
+    <div class="question" data-answer="Flute">16. What is a musical instrument you blow into?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Flute')">Flute</div>
+      <div class="option" onclick="checkAnswer(this, 'Flute')">Drum</div>
+      <div class="option" onclick="checkAnswer(this, 'Flute')">Guitar</div>
+      <div class="option" onclick="checkAnswer(this, 'Flute')">Piano</div>
+    </div>
+    <div class="question" data-answer="Black">17. What is the color of coal?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Black')">Black</div>
+      <div class="option" onclick="checkAnswer(this, 'Black')">White</div>
+      <div class="option" onclick="checkAnswer(this, 'Black')">Red</div>
+      <div class="option" onclick="checkAnswer(this, 'Black')">Blue</div>
+    </div>
+    <div class="question" data-answer="Pattern">18. What is a repeated design called?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Pattern')">Pattern</div>
+      <div class="option" onclick="checkAnswer(this, 'Pattern')">Shape</div>
+      <div class="option" onclick="checkAnswer(this, 'Pattern')">Color</div>
+      <div class="option" onclick="checkAnswer(this, 'Pattern')">Texture</div>
+    </div>
+    <div class="question" data-answer="Texture">19. What is the feel or appearance of a surface called?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Texture')">Texture</div>
+      <div class="option" onclick="checkAnswer(this, 'Texture')">Color</div>
+      <div class="option" onclick="checkAnswer(this, 'Texture')">Shape</div>
+      <div class="option" onclick="checkAnswer(this, 'Texture')">Pattern</div>
+    </div>
+    <div class="question" data-answer="Guitar">20. What is a musical instrument with strings?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Guitar')">Guitar</div>
+      <div class="option" onclick="checkAnswer(this, 'Guitar')">Drum</div>
+      <div class="option" onclick="checkAnswer(this, 'Guitar')">Flute</div>
+      <div class="option" onclick="checkAnswer(this, 'Guitar')">Piano</div>
+    </div>
+  </div>
+
+  <!-- Our World Our People Section -->
+  <div class="subject">
+    <h2>Our World Our People</h2>
+    <div class="question" data-answer="Family">1. What is a group of people related by blood or marriage?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Family')">Family</div>
+      <div class="option" onclick="checkAnswer(this, 'Family')">Friends</div>
+      <div class="option" onclick="checkAnswer(this, 'Family')">Neighbors</div>
+      <div class="option" onclick="checkAnswer(this, 'Family')">Strangers</div>
+    </div>
+    <div class="question" data-answer="Community">2. What is a group of people living in the same area?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Community')">Community</div>
+      <div class="option" onclick="checkAnswer(this, 'Community')">Family</div>
+      <div class="option" onclick="checkAnswer(this, 'Community')">Country</div>
+      <div class="option" onclick="checkAnswer(this, 'Community')">School</div>
+    </div>
+    <div class="question" data-answer="Respect">3. What is treating others with honor and dignity?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Respect')">Respect</div>
+      <div class="option" onclick="checkAnswer(this, 'Respect')">Anger</div>
+      <div class="option" onclick="checkAnswer(this, 'Respect')">Fear</div>
+      <div class="option" onclick="checkAnswer(this, 'Respect')">Pride</div>
+    </div>
+    <div class="question" data-answer="School">4. Where do children go to learn?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'School')">School</div>
+      <div class="option" onclick="checkAnswer(this, 'School')">Market</div>
+      <div class="option" onclick="checkAnswer(this, 'School')">Hospital</div>
+      <div class="option" onclick="checkAnswer(this, 'School')">Farm</div>
+    </div>
+    <div class="question" data-answer="Market">5. Where do people go to buy and sell goods?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Market')">Market</div>
+      <div class="option" onclick="checkAnswer(this, 'Market')">School</div>
+      <div class="option" onclick="checkAnswer(this, 'Market')">Hospital</div>
+      <div class="option" onclick="checkAnswer(this, 'Market')">Church</div>
+    </div>
+    <div class="question" data-answer="Hospital">6. Where do sick people go for treatment?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Hospital')">Hospital</div>
+      <div class="option" onclick="checkAnswer(this, 'Hospital')">School</div>
+      <div class="option" onclick="checkAnswer(this, 'Hospital')">Market</div>
+      <div class="option" onclick="checkAnswer(this, 'Hospital')">Farm</div>
+    </div>
+    <div class="question" data-answer="Leader">7. Who is a person that guides or directs others?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Leader')">Leader</div>
+      <div class="option" onclick="checkAnswer(this, 'Leader')">Follower</div>
+      <div class="option" onclick="checkAnswer(this, 'Leader')">Teacher</div>
+      <div class="option" onclick="checkAnswer(this, 'Leader')">Student</div>
+    </div>
+    <div class="question" data-answer="Rules">8. What are instructions that tell us what to do?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Rules')">Rules</div>
+      <div class="option" onclick="checkAnswer(this, 'Rules')">Games</div>
+      <div class="option" onclick="checkAnswer(this, 'Rules')">Stories</div>
+      <div class="option" onclick="checkAnswer(this, 'Rules')">Songs</div>
+    </div>
+    <div class="question" data-answer="Environment">9. What is the natural world around us?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Environment')">Environment</div>
+      <div class="option" onclick="checkAnswer(this, 'Environment')">School</div>
+      <div class="option" onclick="checkAnswer(this, 'Environment')">Market</div>
+      <div class="option" onclick="checkAnswer(this, 'Environment')">House</div>
+    </div>
+    <div class="question" data-answer="Cleanliness">10. What is keeping things neat and tidy?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Cleanliness')">Cleanliness</div>
+      <div class="option" onclick="checkAnswer(this, 'Cleanliness')">Dirtiness</div>
+      <div class="option" onclick="checkAnswer(this, 'Cleanliness')">Laziness</div>
+      <div class="option" onclick="checkAnswer(this, 'Cleanliness')">Carelessness</div>
+    </div>
+    <div class="question" data-answer="Cooperation">11. What is working together to achieve a goal?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Cooperation')">Cooperation</div>
+      <div class="option" onclick="checkAnswer(this, 'Cooperation')">Competition</div>
+      <div class="option" onclick="checkAnswer(this, 'Cooperation')">Fighting</div>
+      <div class="option" onclick="checkAnswer(this, 'Cooperation')">Ignoring</div>
+    </div>
+    <div class="question" data-answer="Culture">12. What is the way of life of a group of people?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Culture')">Culture</div>
+      <div class="option" onclick="checkAnswer(this, 'Culture')">School</div>
+      <div class="option" onclick="checkAnswer(this, 'Culture')">Market</div>
+      <div class="option" onclick="checkAnswer(this, 'Culture')">Family</div>
+    </div>
+    <div class="question" data-answer="Festival">13. What is a special event to celebrate something?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Festival')">Festival</div>
+      <div class="option" onclick="checkAnswer(this, 'Festival')">Meeting</div>
+      <div class="option" onclick="checkAnswer(this, 'Festival')">Lesson</div>
+      <div class="option" onclick="checkAnswer(this, 'Festival')">Work</div>
+    </div>
+    <div class="question" data-answer="Peace">14. What is a state of calm and no fighting?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Peace')">Peace</div>
+      <div class="option" onclick="checkAnswer(this, 'Peace')">War</div>
+      <div class="option" onclick="checkAnswer(this, 'Peace')">Anger</div>
+      <div class="option" onclick="checkAnswer(this, 'Peace')">Fear</div>
+    </div>
+    <div class="question" data-answer="Farmer">15. Who grows crops and raises animals?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Farmer')">Farmer</div>
+      <div class="option" onclick="checkAnswer(this, 'Farmer')">Teacher</div>
+      <div class="option" onclick="checkAnswer(this, 'Farmer')">Doctor</div>
+      <div class="option" onclick="checkAnswer(this, 'Farmer')">Trader</div>
+    </div>
+    <div class="question" data-answer="Doctor">16. Who treats sick people?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Doctor')">Doctor</div>
+      <div class="option" onclick="checkAnswer(this, 'Doctor')">Farmer</div>
+      <div class="option" onclick="checkAnswer(this, 'Doctor')">Teacher</div>
+      <div class="option" onclick="checkAnswer(this, 'Doctor')">Trader</div>
+    </div>
+    <div class="question" data-answer="Teacher">17. Who helps students learn in school?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Teacher')">Teacher</div>
+      <div class="option" onclick="checkAnswer(this, 'Teacher')">Doctor</div>
+      <div class="option" onclick="checkAnswer(this, 'Teacher')">Farmer</div>
+      <div class="option" onclick="checkAnswer(this, 'Teacher')">Trader</div>
+    </div>
+    <div class="question" data-answer="Trader">18. Who buys and sells goods?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Trader')">Trader</div>
+      <div class="option" onclick="checkAnswer(this, 'Trader')">Teacher</div>
+      <div class="option" onclick="checkAnswer(this, 'Trader')">Doctor</div>
+      <div class="option" onclick="checkAnswer(this, 'Trader')">Farmer</div>
+    </div>
+    <div class="question" data-answer="Home">19. Where do people live with their family?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Home')">Home</div>
+      <div class="option" onclick="checkAnswer(this, 'Home')">School</div>
+      <div class="option" onclick="checkAnswer(this, 'Home')">Market</div>
+      <div class="option" onclick="checkAnswer(this, 'Home')">Hospital</div>
+    </div>
+    <div class="question" data-answer="Honesty">20. What is telling the truth?</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 'Honesty')">Honesty</div>
+      <div class="option" onclick="checkAnswer(this, 'Honesty')">Dishonesty</div>
+      <div class="option" onclick="checkAnswer(this, 'Honesty')">Anger</div>
+      <div class="option" onclick="checkAnswer(this, 'Honesty')">Fear</div>
+    </div>
+  </div>
+
+  <script>
+    function checkAnswer(element, correctAnswer) {
+      const parentQuestion = element.parentElement.previousElementSibling;
+      const feedback = document.createElement('div');
+      feedback.className = 'feedback';
+      
+      if (element.textContent === correctAnswer) {
+        element.classList.add('correct');
+        feedback.textContent = 'Correct!';
+        feedback.style.color = 'green';
+      } else {
+        element.classList.add('wrong');
+        feedback.textContent = `Wrong! The correct answer is ${correctAnswer}.`;
+        feedback.style.color = 'red';
+      }
+      
+      // Disable further clicks on options for this question
+      const options = element.parentElement.querySelectorAll('.option');
+      options.forEach(opt => {
+        opt.onclick = null;
+        opt.style.cursor = 'default';
+      });
+      
+      // Remove previous feedback if any
+      const existingFeedback = element.parentElement.nextElementSibling;
+      if (existingFeedback && existingFeedback.className === 'feedback') {
+        existingFeedback.remove();
+      }
+      
+      // Add new feedback
+      element.parentElement.insertAdjacentElement('afterend', feedback);
+    }
+  </script>
 </body>
+</html>
+
 </html>
 <div class="menu" id="menu">
   <div onclick="showContent('about')">ABOUT</div>
