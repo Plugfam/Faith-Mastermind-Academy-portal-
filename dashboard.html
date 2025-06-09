@@ -1111,13 +1111,453 @@ footer {
             </div>
             <div class="activity">
                 <h3>Activity 3: Story Continuation</h3>
-                <p>Write a short story about Eli's next visit to Sasabosa. What new adventure do they have?</p>
+                <p>Write a short story about Salifu's next visit to Sasabosa. What new adventure do they have?</p>
             </div>
         </div>
     </div>
 </body>
 </html>
-        
+        <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Boy Who Met Sasabosa</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e6f3ff;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+        .cover {
+            text-align: center;
+            padding: 50px;
+            background-color: #ffcc00;
+            color: #333;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .cover h1 {
+            font-size: 50px;
+            margin: 0;
+            text-shadow: 2px 2px #fff;
+        }
+        .cover p {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        h2 {
+            color: #ff6600;
+            border-bottom: 3px solid #ff6600;
+            padding-bottom: 5px;
+            font-size: 28px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .chapter, .contents, .activities {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .chapter p {
+            line-height: 1.6;
+            font-size: 18px;
+        }
+        .contents ul {
+            list-style: none;
+            padding: 0;
+        }
+        .contents ul li {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .contents ul li a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .contents ul li a:hover {
+            text-decoration: underline;
+        }
+        .activities .activity {
+            background-color: #e6ffe6;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        img {
+            max-width: 150px;
+            border-radius: 10px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Boy Who Met Sasabosa</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e6f3ff;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+        .cover {
+            text-align: center;
+            padding: 50px;
+            background-color: #ffcc00;
+            color: #333;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .cover h1 {
+            font-size: 50px;
+            margin: 0;
+            text-shadow: 2px 2px #fff;
+        }
+        .cover p {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        h2 {
+            color: #ff6600;
+            border-bottom: 3px solid #ff6600;
+            padding-bottom: 5px;
+            font-size: 28px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .chapter, .contents, .activities {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .chapter p {
+            line-height: 1.6;
+            font-size: 18px;
+        }
+        .contents ul {
+            list-style: none;
+            padding: 0;
+        }
+        .contents ul li {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .contents ul li a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .contents ul li a:hover {
+            text-decoration: underline;
+        }
+        .activities .activity {
+            background-color: #e6ffe6;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        img {
+            max-width: 150px;
+            border-radius: 10px;
+            margin: 10px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wonderful School at Nalerigu</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e0f7fa;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+        .cover {
+            text-align: center;
+            padding: 50px;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .cover h1 {
+            font-size: 50px;
+            margin: 0;
+            text-shadow: 2px 2px #333;
+        }
+        .cover p {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+        h2 {
+            color: #0288d1;
+            border-bottom: 3px solid #0288d1;
+            padding-bottom: 5px;
+            font-size: 28px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .chapter, .contents, .activities {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .chapter p {
+            line-height: 1.6;
+            font-size: 18px;
+        }
+        .contents ul {
+            list-style: none;
+            padding: 0;
+        }
+        .contents ul li {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .contents ul li a {
+            color: #d81b60;
+            text-decoration: none;
+        }
+        .contents ul li a:hover {
+            text-decoration: underline;
+        }
+        .activities .activity {
+            background-color: #e8f5e9;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        img {
+            max-width: 150px;
+            border-radius: 10px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cover Page -->
+        <div class="cover">
+            <h1>The Wonderful School at Nalerigu</h1>
+            <p>A Story About Faith Mastermind Academy</p>
+            <p>By KARIM SALIFU</p>
+            <img src="https://via.placeholder.com/150?text=School" alt="Faith Mastermind Academy">
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="section contents">
+            <h2>Contents</h2>
+            <ul>
+                <li><a href="#chapter1">Chapter 1: A New Day in Nalerigu</a></li>
+                <li><a href="#chapter2">Chapter 2: Meeting Mr. Mathias</a></li>
+                <li><a href="#chapter3">Chapter 3: The Amazing Teachers</a></li>
+                <li><a href="#activities">Fun Activities</a></li>
+            </ul>
+        </div>
+
+        <!-- Chapter 1: A New Day in Nalerigu -->
+        <div class="section chapter" id="chapter1">
+            <h2>Chapter 1: A New Day in Nalerigu</h2>
+            <p>In the sunny town of Nalerigu, in Ghana’s North East Region, there was a special school called Faith Mastermind Academy. A girl named Ama woke up excited. Today was her first day at this famous school!</p>
+            <p>Ama walked through the town, passing colorful markets and waving to neighbors. The school stood tall with bright walls and a big sign that read, "Faith Mastermind Academy: Where Dreams Grow." Ama felt her heart skip with joy.</p>
+            <img src="https://via.placeholder.com/150?text=Nalerigu" alt="Nalerigu Town">
+            <p>Inside, the school was full of laughter. Children played in a green field, and teachers smiled warmly. Ama knew this was going to be a wonderful place to learn.</p>
+        </div>
+
+        <!-- Chapter 2: Meeting Mr. Mathias -->
+        <div class="section chapter" id="chapter2">
+            <h2>Chapter 2: Meeting Mr. Mathias</h2>
+            <p>Ama’s first stop was the principal’s office. There, she met Mr. Mathias, the kind man who started Faith Mastermind Academy. He had a big smile and eyes that sparkled with ideas.</p>
+            <p>“Welcome, Ama!” said Mr. Mathias. “Our school is a place where everyone can shine. We learn, we play, and we grow together.” Ama felt safe and happy. Mr. Mathias showed her the library, filled with colorful books, and the science lab, where students did fun experiments.</p>
+            <img src="https://via.placeholder.com/150?text=Mr+Mathias" alt="Mr. Mathias">
+            <p>Mr. Mathias told Ama, “I built this school to help children like you become leaders.” Ama decided she wanted to work hard and make him proud.</p>
+        </div>
+
+        <!-- Chapter 3: The Amazing Teachers -->
+        <div class="section chapter" id="chapter3">
+            <h2>Chapter 3: The Amazing Teachers</h2>
+            <p>Ama’s first class was with Miss Afi, the English teacher. She made reading fun by acting out stories. Then, Mr. Kwame taught math with games that made numbers exciting. Every teacher at Faith Mastermind Academy cared about their students.</p>
+            <p>During break, Ama saw teachers helping students with homework and playing games with them. The staff worked together like a big family, always encouraging the children to try their best.</p>
+            <img src="https://via.placeholder.com/150?text=Teachers" alt="Teachers">
+            <p>At the end of the day, Ama told her friends, “Faith Mastermind Academy is the best school! Mr. Mathias and the teachers make learning so much fun!” She couldn’t wait to come back tomorrow.</p>
+            <p><strong>The End</strong></p>
+        </div>
+
+        <!-- Fun Activities -->
+        <div class="section activities" id="activities">
+            <h2>Fun Activities</h2>
+            <div class="activity">
+                <h3>Activity 1: Draw Your School</h3>
+                <p>Draw a picture of Faith Mastermind Academy. What does the school look like? Add bright colors to show its happy spirit!</p>
+            </div>
+            <div class="activity">
+                <h3>Activity 2: Write a Thank You Note</h3>
+                <p>Write a note to Mr. Mathias or a teacher, thanking them for making the school special. What do you like best about the school?</p>
+            </div>
+            <div class="activity">
+                <h3>Activity 3: Create a Story</h3>
+                <p>Write a short story about your own adventure at Faith Mastermind Academy. What do you learn, and who do you meet?</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
 <div class="menu" id="menu">
   <div onclick="showContent('about')">ABOUT</div>
   <div onclick="showContent('contact')">CONTACT</div>
