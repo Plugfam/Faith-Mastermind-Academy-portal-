@@ -2456,26 +2456,39 @@ footer {
         return gk_fileData[filename] || "";
         }
         
-       <button class="whatsapp-btn" onclick="window.open('https://wa.me/qr/XF52CPCODPXKA1', '_Direct to my whatsapp Dm'); ('Contact me on Whatsapp')">
-    WhatsApp
-  </button
-<div class="content" id="contact">
-  <h3>CONTACT</h3>
-  <p>Phone:0595447148</p>
-</div>
-
-<div class="content" id="service">
-  <h3>SERVICE</h3>
-  <p>📚📖📕📗📘📙🖊️✒️🖋️📝</p>
-</div>
-
-<div class="content settings" id="settings">
-  <h3>SETTINGS</h3>
-  <span>Internal command</span>
-</div>
-
-<script>
-  function toggleMenu() {
-    var menu = document.getElementById("menu");
-    menu.style.display = menu.style.display === "block" ? "none" : "block";
-  }
+       
+  <script>
+    function checkAnswer(element, correctAnswer) {
+      const parentQuestion = element.parentElement.previousElementSibling;
+      const feedback = document.createElement('div');
+      feedback.className = 'feedback';
+      
+      if (element.textContent === correctAnswer) {
+        element.classList.add('correct');
+        feedback.textContent = 'Correct!';
+        feedback.style.color = 'green';
+      } else {
+        element.classList.add('wrong');
+        feedback.textContent = `Wrong! The correct answer is ${correctAnswer}.`;
+        feedback.style.color = 'red';
+      }
+      
+      // Disable further clicks on options for this question
+      const options = element.parentElement.querySelectorAll('.option');
+      options.forEach(opt => {
+        opt.onclick = null;
+        opt.style.cursor = 'default';
+      });
+      
+      // Remove previous feedback if any
+      const existingFeedback = element.parentElement.nextElementSibling;
+      if (existingFeedback && existingFeedback.className === 'feedback') {
+        existingFeedback.remove();
+      }
+      
+      // Add new feedback
+      element.parentElement.insertAdjacentElement('afterend', feedback);
+    }
+  </script>
+</body>
+</html>
