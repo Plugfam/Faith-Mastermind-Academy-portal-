@@ -1489,73 +1489,419 @@ footer {
             margin: 10px;
         }
     </style>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faith Mastermind Academy Questions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 20px;
+        }
+        .subject-container {
+            margin-bottom: 40px;
+        }
+        .question {
+            background-color: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .options {
+            margin-top: 10px;
+        }
+        .option {
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #ecf0f1;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+        .option:hover {
+            background-color: #dfe6e9;
+        }
+        .correct {
+            background-color: #2ecc71 !important;
+            color: white;
+        }
+        .wrong {
+            background-color: #e74c3c !important;
+            color: white;
+        }
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .score {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+        .clear-btn, .show-answers-btn {
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .clear-btn:hover, .show-answers-btn:hover {
+            background-color: #2980b9;
+        }
+        .answer-key {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .answer-key.show {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Cover Page -->
-        <div class="cover">
-            <h1>The Wonderful School at Nalerigu</h1>
-            <p>A Story About Faith Mastermind Academy</p>
-            <p>By KARIM SALIFU</p>
-            <img src="https://via.placeholder.com/150?text=School" alt="Faith Mastermind Academy">
-        </div>
-
-        <!-- Table of Contents -->
-        <div class="section contents">
-            <h2>Contents</h2>
-            <ul>
-                <li><a href="#chapter1">Chapter 1: A New Day in Nalerigu</a></li>
-                <li><a href="#chapter2">Chapter 2: Meeting Mr. Mathias</a></li>
-                <li><a href="#chapter3">Chapter 3: The Amazing Teachers</a></li>
-                <li><a href="#activities">Fun Activities</a></li>
-            </ul>
-        </div>
-
-        <!-- Chapter 1: A New Day in Nalerigu -->
-        <div class="section chapter" id="chapter1">
-            <h2>Chapter 1: A New Day in Nalerigu</h2>
-            <p>In the sunny town of Nalerigu, in Ghana’s North East Region, there was a special school called Faith Mastermind Academy. A girl named Ama woke up excited. Today was her first day at this famous school!</p>
-            <p>Ama walked through the town, passing colorful markets and waving to neighbors. The school stood tall with bright walls and a big sign that read, "Faith Mastermind Academy: Where Dreams Grow." Ama felt her heart skip with joy.</p>
-            <img src="https://via.placeholder.com/150?text=Nalerigu" alt="Nalerigu Town">
-            <p>Inside, the school was full of laughter. Children played in a green field, and teachers smiled warmly. Ama knew this was going to be a wonderful place to learn.</p>
-        </div>
-
-        <!-- Chapter 2: Meeting Mr. Mathias -->
-        <div class="section chapter" id="chapter2">
-            <h2>Chapter 2: Meeting Mr. Mathias</h2>
-            <p>Ama’s first stop was the principal’s office. There, she met Mr. Mathias, the kind man who started Faith Mastermind Academy. He had a big smile and eyes that sparkled with ideas.</p>
-            <p>“Welcome, Ama!” said Mr. Mathias. “Our school is a place where everyone can shine. We learn, we play, and we grow together.” Ama felt safe and happy. Mr. Mathias showed her the library, filled with colorful books, and the science lab, where students did fun experiments.</p>
-            <img src="https://via.placeholder.com/150?text=Mr+Mathias" alt="Mr. Mathias">
-            <p>Mr. Mathias told Ama, “I built this school to help children like you become leaders.” Ama decided she wanted to work hard and make him proud.</p>
-        </div>
-
-        <!-- Chapter 3: The Amazing Teachers -->
-        <div class="section chapter" id="chapter3">
-            <h2>Chapter 3: The Amazing Teachers</h2>
-            <p>Ama’s first class was with Miss Afi, the English teacher. She made reading fun by acting out stories. Then, Mr. Kwame taught math with games that made numbers exciting. Every teacher at Faith Mastermind Academy cared about their students.</p>
-            <p>During break, Ama saw teachers helping students with homework and playing games with them. The staff worked together like a big family, always encouraging the children to try their best.</p>
-            <img src="https://via.placeholder.com/150?text=Teachers" alt="Teachers">
-            <p>At the end of the day, Ama told her friends, “Faith Mastermind Academy is the best school! Mr. Mathias and the teachers make learning so much fun!” She couldn’t wait to come back tomorrow.</p>
-            <p><strong>The End</strong></p>
-        </div>
-
-        <!-- Fun Activities -->
-        <div class="section activities" id="activities">
-            <h2>Fun Activities</h2>
-            <div class="activity">
-                <h3>Activity 1: Draw Your School</h3>
-                <p>Draw a picture of Faith Mastermind Academy. What does the school look like? Add bright colors to show its happy spirit!</p>
+    <h1>FAITH MASTERMIND ACADEMY QUESTIONS</h1>
+    <div id="quiz-container">
+        <!-- Science Questions -->
+        <div class="subject-container" id="science">
+            <h2>Science</h2>
+            <div class="score">Score: <span id="science-score">0</span>/20</div>
+            <button class="clear-btn" onclick="clearAnswers('science')">Clear Answers</button>
+            <button class="show-answers-btn" onclick="toggleAnswers('science-answers')">Show/Hide Answers</button>
+            <div id="science-questions"></div>
+            <div id="science-answers" class="answer-key">
+                <h3>Science Answer Key</h3>
+                <p>1. Sun (C), 2. Oxygen (B), 3. Seed (A), 4. Liquid (B), 5. Moon (C), 6. Roots (A), 7. Evaporation (B), 8. Lungs (C), 9. Photosynthesis (A), 10. Solid (B), 11. Flower (C), 12. Condensation (A), 13. Heart (B), 14. Soil (C), 15. Gravity (A), 16. Stem (B), 17. Gas (C), 18. Leaves (A), 19. Friction (B), 20. Water (C)</p>
             </div>
-            <div class="activity">
-                <h3>Activity 2: Write a Thank You Note</h3>
-                <p>Write a note to Mr. Mathias or a teacher, thanking them for making the school special. What do you like best about the school?</p>
+        </div>
+        <!-- RME Questions -->
+        <div class="subject-container" id="rme">
+            <h2>Religious and Moral Education (RME)</h2>
+            <div class="score">Score: <span id="rme-score">0</span>/20</div>
+            <button class="clear-btn" onclick="clearAnswers('rme')">Clear Answers</button>
+            <button class="show-answers-btn" onclick="toggleAnswers('rme-answers')">Show/Hide Answers</button>
+            <div id="rme-questions"></div>
+            <div id="rme-answers" class="answer-key">
+                <h3>RME Answer Key</h3>
+                <p>1. Bible (A), 2. Honesty (B), 3. Prayer (C), 4. Respect (A), 5. Christmas (B), 6. Sharing (C), 7. Mosque (A), 8. Forgiveness (B), 9. Ramadan (C), 10. Kindness (A), 11. Church (B), 12. Truthfulness (C), 13. Eid (A), 14. Love (B), 15. Charity (C), 16. Obedience (A), 17. Quran (B), 18. Gratitude (C), 19. Faith (A), 20. Peace (B)</p>
             </div>
-            <div class="activity">
-                <h3>Activity 3: Create a Story</h3>
-                <p>Write a short story about your own adventure at Faith Mastermind Academy. What do you learn, and who do you meet?</p>
+        </div>
+        <!-- English Questions -->
+        <div class="subject-container" id="english">
+            <h2>English</h2>
+            <div class="score">Score: <span id="english-score">0</span>/20</div>
+            <button class="clear-btn" onclick="clearAnswers('english')">Clear Answers</button>
+            <button class="show-answers-btn" onclick="toggleAnswers('english-answers')">Show/Hide Answers</button>
+            <div id="english-questions"></div>
+            <div id="english-answers" class="answer-key">
+                <h3>English Answer Key</h3>
+                <p>1. Noun (C), 2. Is (A), 3. Big (B), 4. Run (C), 5. Comma (A), 6. She (B), 7. Happy (C), 8. Book (A), 9. Slowly (B), 10. Question (C), 11. Cat (A), 12. Are (B), 13. Tall (C), 14. Sing (A), 15. Period (B), 16. He (C), 17. Sad (A), 18. Pen (B), 19. Quickly (C), 20. Exclamation (A)</p>
+            </div>
+        </div>
+        <!-- Maths Questions -->
+        <div class="subject-container" id="maths">
+            <h2>Maths</h2>
+            <div class="score">Score: <span id="maths-score">0</span>/20</div>
+            <button class="clear-btn" onclick="clearAnswers('maths')">Clear Answers</button>
+            <button class="show-answers-btn" onclick="toggleAnswers('maths-answers')">Show/Hide Answers</button>
+            <div id="maths-questions"></div>
+            <div id="maths-answers" class="answer-key">
+                <h3>Maths Answer Key</h3>
+                <p>1. 4 (C), 2. 6 (A), 3. 8 (B), 4. 10 (C), 5. 3 (A), 6. 12 (B), 7. 15 (C), 8. 5 (A), 9. 9 (B), 10. 7 (C), 11. 20 (A), 12. 2 (B), 13. 14 (C), 14. 11 (A), 15. 16 (B), 16. 18 (C), 17. 4 (A), 18. 13 (B), 19. 17 (C), 20. 19 (A)</p>
+            </div>
+        </div>
+        <!-- Creative Arts Questions -->
+        <div class="subject-container" id="creative-arts">
+            <h2>Creative Arts</h2>
+            <div class="score">Score: <span id="creative-arts-score">0</span>/20</div>
+            <button class="clear-btn" onclick="clearAnswers('creative-arts')">Clear Answers</button>
+            <button class="show-answers-btn" onclick="toggleAnswers('creative-arts-answers')">Show/Hide Answers</button>
+            <div id="creative-arts-questions"></div>
+            <div id="creative-arts-answers" class="answer-key">
+                <h3>Creative Arts Answer Key</h3>
+                <p>1. Blue (C), 2. Circle (A), 3. Drum (B), 4. Paint (C), 5. Dance (A), 6. Red (B), 7. Square (C), 8. Song (A), 9. Clay (B), 10. Act (C), 11. Yellow (A), 12. Triangle (B), 13. Guitar (C), 14. Brush (A), 15. Draw (B), 16. Green (C), 17. Rectangle (A), 18. Piano (B), 19. Paper (C), 20. Sing (A)</p>
+            </div>
+        </div>
+        <!-- Our World Our People Questions -->
+        <div class="subject-container" id="our-world">
+            <h2>Our World Our People</h2>
+            <div class="score">Score: <span id="our-world-score">0</span>/20</div>
+            <button class="clear-btn" onclick="clearAnswers('our-world')">Clear Answers</button>
+            <button class="show-answers-btn" onclick="toggleAnswers('our-world-answers')">Show/Hide Answers</button>
+            <div id="our-world-questions"></div>
+            <div id="our-world-answers" class="answer-key">
+                <h3>Our World Our People Answer Key</h3>
+                <p>1. Family (C), 2. Teacher (A), 3. Market (B), 4. Doctor (C), 5. River (A), 6. Chief (B), 7. School (C), 8. Farmer (A), 9. Road (B), 10. Nurse (C), 11. Village (A), 12. Police (B), 13. Park (C), 14. Fisherman (A), 15. Forest (B), 16. Lawyer (C), 17. Town (A), 18. Firefighter (B), 19. Lake (C), 20. Leader (A)</p>
             </div>
         </div>
     </div>
+
+    <script>
+        const quizData = {
+            science: [
+                { question: "What is the main source of energy for Earth?", options: ["Wind", "Water", "Sun"], answer: "Sun" },
+                { question: "What gas do plants need to make food?", options: ["Nitrogen", "Oxygen", "Carbon dioxide"], answer: "Oxygen" },
+                { question: "What part of a plant grows into a new plant?", options: ["Seed", "Leaf", "Stem"], answer: "Seed" },
+                { question: "What state of matter is water in a river?", options: ["Gas", "Liquid", "Solid"], answer: "Liquid" },
+                { question: "What causes night and day?", options: ["Stars", "Clouds", "Moon"], answer: "Moon" },
+                { question: "What part of a plant takes in water?", options: ["Roots", "Flower", "Leaf"], answer: "Roots" },
+                { question: "What is water turning into vapor called?", options: ["Condensation", "Evaporation", "Freezing"], answer: "Evaporation" },
+                { question: "Which organ helps us breathe?", options: ["Heart", "Stomach", "Lungs"], answer: "Lungs" },
+                { question: "What process do plants use to make food?", options: ["Photosynthesis", "Respiration", "Digestion"], answer: "Photosynthesis" },
+                { question: "What state of matter is ice?", options: ["Gas", "Solid", "Liquid"], answer: "Solid" },
+                { question: "What part of a plant attracts insects?", options: ["Stem", "Root", "Flower"], answer: "Flower" },
+                { question: "What is water vapor turning into liquid called?", options: ["Condensation", "Evaporation", "Melting"], answer: "Condensation" },
+                { question: "Which organ pumps blood?", options: ["Lungs", "Heart", "Brain"], answer: "Heart" },
+                { question: "What do plants grow in?", options: ["Water", "Air", "Soil"], answer: "Soil" },
+                { question: "What force pulls objects to the ground?", options: ["Gravity", "Magnetism", "Friction"], answer: "Gravity" },
+                { question: "What part of a plant holds it up?", options: ["Leaf", "Stem", "Root"], answer: "Stem" },
+                { question: "What state of matter is steam?", options: ["Solid", "Liquid", "Gas"], answer: "Gas" },
+                { question: "What part of a plant makes food?", options: ["Leaves", "Roots", "Flowers"], answer: "Leaves" },
+                { question: "What force slows down moving objects?", options: ["Gravity", "Friction", "Magnetism"], answer: "Friction" },
+                { question: "What do plants need to grow?", options: ["Sand", "Rocks", "Water"], answer: "Water" }
+            ],
+            rme: [
+                { question: "What is the holy book of Christians?", options: ["Bible", "Quran", "Torah"], answer: "Bible" },
+                { question: "What is telling the truth called?", options: ["Lying", "Honesty", "Cheating"], answer: "Honesty" },
+                { question: "What is talking to God called?", options: ["Singing", "Reading", "Prayer"], answer: "Prayer" },
+                { question: "What should you show to elders?", options: ["Respect", "Anger", "Fear"], answer: "Respect" },
+                { question: "What festival celebrates Jesus' birth?", options: ["Easter", "Christmas", "Eid"], answer: "Christmas" },
+                { question: "What is giving to others called?", options: ["Taking", "Keeping", "Sharing"], answer: "Sharing" },
+                { question: "Where do Muslims pray?", options: ["Mosque", "Church", "Temple"], answer: "Mosque" },
+                { question: "What is letting go of anger called?", options: ["Hatred", "Forgiveness", "Revenge"], answer: "Forgiveness" },
+                { question: "What is the Muslim fasting month?", options: ["Easter", "Diwali", "Ramadan"], answer: "Ramadan" },
+                { question: "What is being nice to others called?", options: ["Kindness", "Rudeness", "Selfishness"], answer: "Kindness" },
+                { question: "Where do Christians worship?", options: ["Mosque", "Church", "Synagogue"], answer: "Church" },
+                { question: "What is always saying the truth?", options: ["Lying", "Cheating", "Truthfulness"], answer: "Truthfulness" },
+                { question: "What festival ends Ramadan?", options: ["Eid", "Christmas", "Diwali"], answer: "Eid" },
+                { question: "What is caring for others called?", options: ["Hate", "Love", "Anger"], answer: "Love" },
+                { question: "What is giving to the poor called?", options: ["Stealing", "Hiding", "Charity"], answer: "Charity" },
+                { question: "What is following rules called?", options: ["Obedience", "Disobedience", "Fighting"], answer: "Obedience" },
+                { question: "What is the holy book of Muslims?", options: ["Bible", "Quran", "Vedas"], answer: "Quran" },
+                { question: "What is being thankful called?", options: ["Complaining", "Sadness", "Gratitude"], answer: "Gratitude" },
+                { question: "What is believing in God called?", options: ["Faith", "Doubt", "Fear"], answer: "Faith" },
+                { question: "What is living without fighting called?", options: ["War", "Peace", "Chaos"], answer: "Peace" }
+            ],
+            english: [
+                { question: "What is a naming word?", options: ["Verb", "Adjective", "Noun"], answer: "Noun" },
+                { question: "What is the correct verb: The cat ___ on the mat.", options: ["Is", "Are", "Am"], answer: "Is" },
+                { question: "What describes a noun?", options: ["Adverb", "Adjective", "Pronoun"], answer: "Adjective" },
+                { question: "What is an action word?", options: ["Noun", "Adjective", "Verb"], answer: "Verb" },
+                { question: "What punctuation shows a pause?", options: ["Comma", "Period", "Question mark"], answer: "Comma" },
+                { question: "What replaces a noun?", options: ["Adjective", "Pronoun", "Adverb"], answer: "Pronoun" },
+                { question: "Which word describes feelings?", options: ["Big", "Run", "Happy"], answer: "Happy" },
+                { question: "What is a thing you read?", options: ["Book", "Sing", "Jump"], answer: "Book" },
+                { question: "What describes how an action is done?", options: ["Adjective", "Adverb", "Noun"], answer: "Adverb" },
+                { question: "What punctuation asks something?", options: ["Period", "Comma", "Question mark"], answer: "Question mark" },
+                { question: "What is a naming word for an animal?", options: ["Cat", "Run", "Big"], answer: "Cat" },
+                { question: "What is the correct verb: They ___ happy.", options: ["Is", "Are", "Am"], answer: "Are" },
+                { question: "Which word is an adjective?", options: ["Sing", "Jump", "Tall"], answer: "Tall" },
+                { question: "What is an action word?", options: ["Sing", "Book", "Tree"], answer: "Sing" },
+                { question: "What punctuation ends a sentence?", options: ["Comma", "Period", "Question mark"], answer: "Period" },
+                { question: "What is a pronoun for a boy?", options: ["She", "It", "He"], answer: "He" },
+                { question: "Which word describes a feeling?", options: ["Sad", "Run", "Table"], answer: "Sad" },
+                { question: "What is a thing you write with?", options: ["Pen", "Sing", "Jump"], answer: "Pen" },
+                { question: "Which word is an adverb?", options: ["Big", "Happy", "Quickly"], answer: "Quickly" },
+                { question: "What punctuation shows excitement?", options: ["Exclamation mark", "Comma", "Period"], answer: "Exclamation mark" }
+            ],
+            maths: [
+                { question: "What is 2 + 2?", options: ["3", "5", "4"], answer: "4" },
+                { question: "What is 10 - 4?", options: ["6", "7", "8"], answer: "6" },
+                { question: "What is 4 + 4?", options: ["6", "8", "10"], answer: "8" },
+                { question: "What is 5 + 5?", options: ["9", "11", "10"], answer: "10" },
+                { question: "What is 9 - 6?", options: ["3", "4", "5"], answer: "3" },
+                { question: "What is 6 + 6?", options: ["11", "12", "13"], answer: "12" },
+                { question: "What is 10 + 5?", options: ["14", "16", "15"], answer: "15" },
+                { question: "What is 10 - 5?", options: ["5", "6", "7"], answer: "5" },
+                { question: "What is 4 + 5?", options: ["8", "9", "10"], answer: "9" },
+                { question: "What is 8 - 1?", options: ["6", "8", "7"], answer: "7" },
+                { question: "What is 10 + 10?", options: ["20", "21", "22"], answer: "20" },
+                { question: "What is 5 - 3?", options: ["1", "2", "3"], answer: "2" },
+                { question: "What is 7 + 7?", options: ["13", "15", "14"], answer: "14" },
+                { question: "What is 12 - 1?", options: ["11", "10", "9"], answer: "11" },
+                { question: "What is 8 + 8?", options: ["15", "16", "17"], answer: "16" },
+                { question: "What is 9 + 9?", options: ["17", "19", "18"], answer: "18" },
+                { question: "What is 6 - 2?", options: ["4", "3", "5"], answer: "4" },
+                { question: "What is 10 + 3?", options: ["12", "13", "14"], answer: "13" },
+                { question: "What is 8 + 9?", options: ["16", "18", "17"], answer: "17" },
+                { question: "What is 10 + 9?", options: ["19", "20", "21"], answer: "19" }
+            ],
+            "creative-arts": [
+                { question: "What color is the sky?", options: ["Red", "Yellow", "Blue"], answer: "Blue" },
+                { question: "What shape is a wheel?", options: ["Circle", "Square", "Triangle"], answer: "Circle" },
+                { question: "What instrument makes a loud sound?", options: ["Flute", "Drum", "Piano"], answer: "Drum" },
+                { question: "What do you use to color?", options: ["Pen", "Paper", "Paint"], answer: "Paint" },
+                { question: "What is moving your body to music?", options: ["Dance", "Sing", "Draw"], answer: "Dance" },
+                { question: "What color is a tomato?", options: ["Blue", "Red", "Green"], answer: "Red" },
+                { question: "What shape is a box?", options: ["Circle", "Triangle", "Square"], answer: "Square" },
+                { question: "What is a group of words you sing?", options: ["Song", "Story", "Poem"], answer: "Song" },
+                { question: "What do you use to make a pot?", options: ["Paper", "Clay", "Wood"], answer: "Clay" },
+                { question: "What is pretending to be someone else?", options: ["Sing", "Dance", "Act"], answer: "Act" },
+                { question: "What color is a banana?", options: ["Yellow", "Red", "Blue"], answer: "Yellow" },
+                { question: "What shape has three sides?", options: ["Square", "Triangle", "Circle"], answer: "Triangle" },
+                { question: "What instrument has strings?", options: ["Drum", "Flute", "Guitar"], answer: "Guitar" },
+                { question: "What do you use to paint?", options: ["Brush", "Pencil", "Crayon"], answer: "Brush" },
+                { question: "What is making a picture with a pencil?", options: ["Sing", "Draw", "Dance"], answer: "Draw" },
+                { question: "What color is grass?", options: ["Red", "Blue", "Green"], answer: "Green" },
+                { question: "What shape has four equal sides?", options: ["Rectangle", "Triangle", "Square"], answer: "Rectangle" },
+                { question: "What instrument has keys?", options: ["Guitar", "Piano", "Drum"], answer: "Piano" },
+                { question: "What do you draw on?", options: ["Clay", "Wood", "Paper"], answer: "Paper" },
+                { question: "What is using your voice to make music?", options: ["Sing", "Dance", "Draw"], answer: "Sing" }
+            ],
+            "our-world": [
+                { question: "What is a group of people living together?", options: ["School", "Market", "Family"], answer: "Family" },
+                { question: "Who teaches in a school?", options: ["Teacher", "Doctor", "Farmer"], answer: "Teacher" },
+                { question: "Where do people buy food?", options: ["School", "Market", "Hospital"], answer: "Market" },
+                { question: "Who helps sick people?", options: ["Teacher", "Farmer", "Doctor"], answer: "Doctor" },
+                { question: "What is a body of water?", options: ["River", "Mountain", "Desert"], answer: "River" },
+                { question: "Who is the leader of a village?", options: ["Teacher", "Chief"], answer: "Chief" },
+                { question: "Where do children learn?", options: ["Hospital", "Market", "School"], answer: "School" },
+                { question: "Who grows crops?", options: ["Farmer", "Doctor", "Teacher"], answer: "Farmer" },
+                { question: "What is a path for cars?", options: ["River", "Road", "Sky"], answer: "Road" },
+                { question: "Who cares for patients?", options: ["Teacher", "Farmer", "Nurse"], answer: "Nurse" },
+                { question: "What is a small community?", options: ["Village", "City", "Country"], answer: "Village" },
+                { question: "Who keeps the community safe?", options: ["Farmer", "Police", "Doctor"], answer: "Police" },
+                { question: "Where do children play?", options: ["Road", "River", "Park"], answer: "Park" },
+                { question: "Who catches fish?", options: ["Fisherman", "Teacher", "Doctor"], answer: "Fisherman" },
+                { question: "What is a place with many trees?", options: ["Desert", "Forest", "Road"], answer: "Forest" },
+                { question: "Who helps in court?", options: ["Doctor", "Farmer", "Lawyer"], answer: "Lawyer" },
+                { question: "What is a larger community?", options: ["Town", "Village", "Park"], answer: "Town" },
+                { question: "Who puts out fires?", options: ["Doctor", "Firefighter", "Teacher"], answer: "Firefighter" },
+                { question: "What is a large body of water?", options: ["River", "Road", "Lake"], answer: "Lake" },
+                { question: "Who guides a community?", options: ["Leader", "Farmer", "Doctor"], answer: "Leader" }
+            ]
+        };
+
+        function generateQuestions(subject) {
+            const container = document.getElementById(`${subject}-questions`);
+            quizData[subject].forEach((q, index) => {
+                const questionDiv = document.createElement("div");
+                questionDiv.className = "question";
+                questionDiv.innerHTML = `
+                    <p>${index + 1}. ${q.question}</p>
+                    <div class="options">
+                        ${q.options.map((option, i) => `
+                            <div class="option" onclick="checkAnswer('${subject}', ${index}, '${option}', '${q.answer}')">
+                                ${String.fromCharCode(65 + i)}. ${option}
+                            </div>
+                        `).join("")}
+                    </div>
+                    <div class="feedback" id="feedback-${subject}-${index}"></div>
+                `;
+                container.appendChild(questionDiv);
+            });
+        }
+
+        function checkAnswer(subject, questionIndex, selected, correct) {
+            const feedback = document.getElementById(`feedback-${subject}-${questionIndex}`);
+            const options = document.querySelectorAll(`#${subject}-questions .question:nth-child(${questionIndex + 1}) .option`);
+            let score = parseInt(document.getElementById(`${subject}-score`).textContent);
+
+            options.forEach(option => {
+                option.style.pointerEvents = "none"; // Disable further clicks
+                if (option.textContent.includes(correct)) {
+                    option.classList.add("correct");
+                }
+                if (option.textContent.includes(selected)) {
+                    if (selected === correct) {
+                        feedback.textContent = "Correct!";
+                        feedback.style.color = "green";
+                        if (!option.classList.contains("scored")) {
+                            score++;
+                            document.getElementById(`${subject}-score`).textContent = score;
+                            option.classList.add("scored");
+                        }
+                    } else {
+                        option.classList.add("wrong");
+                        feedback.textContent = `Wrong! Correct answer is ${correct}`;
+                        feedback.style.color = "red";
+                    }
+                }
+            });
+        }
+
+        function clearAnswers(subject) {
+            const container = document.querySelectorAll(`#${subject}-questions .question`);
+            const scoreDisplay = document.querySelectorById(`${subject}-score`);
+            container.forEach((question, index) => {
+                const options = question.querySelectorAll(".option");
+                const feedback = document.querySelectorById(`feedback-${subject}-${index}`);
+                options.forEach(option => {
+                    option.classList.remove("correct", "wrong", "scored");
+                    option.style.pointerEvents = "auto";
+                });
+                feedback.textContent = "";
+            });
+            scoreDisplay.textContent = "0";
+        }
+
+        function toggleAnswers(subject) {
+            const answerKey = document.querySelectorById(`${subject}-answers`);
+            answerKey.classList.toggle("show");
+        }
+
+        // Initialize quiz
+        Object.keys(quizData).forEach(subject => generateQuestions(subject));
+    </script>
+</body>
+                                          </html>
 </body>
 </html>
 <div class="menu" id="menu">
