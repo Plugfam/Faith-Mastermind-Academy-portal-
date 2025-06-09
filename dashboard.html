@@ -2554,78 +2554,7 @@ footer {
                             <button class="w-full text-left p-2 border rounded-md hover:bg-gray-200 option-btn" data-answer="${option === q.answer}" data-option="${option}">
                                 ${String.fromCharCode(65 + i)}. ${option}
                             </button>
-                        `).join('')}
-                    </div>
-                    <p class="mt-2 hidden text-green-600 correct">Correct!</p>
-                    <p class="mt-2 hidden text-red-600 incorrect">Incorrect! The correct answer is: ${q.answer}</p>
-                `;
-                quizContainer.appendChild(questionDiv);
-            });
-
-            document.querySelectorAll('.option-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    const questionDiv = button.parentElement.parentElement;
-                    const correct = button.dataset.answer === 'true';
-                    const correctP = questionDiv.querySelector('.correct');
-                    const incorrectP = questionDiv.querySelector('.incorrect');
-                    if (correct) {
-                        correctP.classList.remove('hidden');
-                        incorrectP.classList.add('hidden');
-                    } else {
-                        incorrectP.classList.remove('hidden');
-                        correctP.classList.add('hidden');
-                    }
-                    questionDiv.querySelectorAll('.option-btn').forEach(btn => {
-                        btn.disabled = true;
-                        if (btn.dataset.answer === 'true') {
-                            btn.classList.add('bg-green-200');
-                        }
-                    });
-                });
-            });
-        }
-
-        subjectSelect.addEventListener('change', loadQuestions);
-        loadQuestions();
-    </script>
-</body>
-</html>
-      
-  <script>
-    function checkAnswer(element, correctAnswer) {
-      const parentQuestion = element.parentElement.previousElementSibling;
-      const feedback = document.createElement('div');
-      feedback.className = 'feedback';
-      
-      if (element.textContent === correctAnswer) {
-        element.classList.add('correct');
-        feedback.textContent = 'Correct!';
-        feedback.style.color = 'green';
-      } else {
-        element.classList.add('wrong');
-        feedback.textContent = `Wrong! The correct answer is ${correctAnswer}.`;
-        feedback.style.color = 'red';
-      }
-      
-      // Disable further clicks on options for this question
-      const options = element.parentElement.querySelectorAll('.option');
-      options.forEach(opt => {
-        opt.onclick = null;
-        opt.style.cursor = 'default';
-      });
-      
-      // Remove previous feedback if any
-      const existingFeedback = element.parentElement.nextElementSibling;
-      if (existingFeedback && existingFeedback.className === 'feedback') {
-        existingFeedback.remove();
-      }
-      
-      // Add new feedback
-      element.parentElement.insertAdjacentElement('afterend', feedback);
-    }
-  </script>
-</body>
-</html>
+                   
 <button class="whatsapp-btn" onclick="window.open('https://wa.me/qr/XF52CPCODPXKA1', '_Direct to my whatsapp Dm'); ('Contact me on Whatsapp')">
     WhatsApp
   </button
