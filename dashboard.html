@@ -2343,7 +2343,254 @@ footer {
       <div class="option" onclick="checkAnswer(this, 'Honesty')">Fear</div>
     </div>
   </div>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
 
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAITH MASTERMINDS ACADEMY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold text-center mb-6">FAITH MASTERMIND ACADEMY TRIAL QUESTIONS(JHS)</h1>
+        <div class="mb-4">
+            <label for="subject" class="block text-lg font-medium mb-2">Select Subject:</label>
+            <select id="subject" class="p-2 border rounded-md w-full max-w-xs">
+                <option value="science">Science</option>
+                <option value="maths">Mathematics</option>
+                <option value="english">English</option>
+                <option value="social">Social Studies</option>
+            </select>
+        </div>
+        <div id="quiz-container" class="space-y-4"></div>
+        <div id="result" class="mt-4 text-lg font-semibold"></div>
+    </div>
+    <script>
+        const questions = {
+            science: [
+                { question: "What is the primary source of energy for Earth's climate system?", options: ["Sun", "Moon", "Wind", "Ocean"], answer: "Sun" },
+                { question: "Which gas is most abundant in Earth's atmosphere?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Argon"], answer: "Nitrogen" },
+                { question: "What is the process by which plants make their food?", options: ["Respiration", "Photosynthesis", "Digestion", "Fermentation"], answer: "Photosynthesis" },
+                { question: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], answer: "Mars" },
+                { question: "What is the unit of electric current?", options: ["Volt", "Ampere", "Ohm", "Watt"], answer: "Ampere" },
+                { question: "Which part of the cell contains genetic material?", options: ["Cytoplasm", "Nucleus", "Mitochondria", "Ribosome"], answer: "Nucleus" },
+                { question: "What is the chemical symbol for water?", options: ["H2O", "CO2", "O2", "N2"], answer: "H2O" },
+                { question: "Which force keeps planets in orbit around the Sun?", options: ["Magnetic", "Gravitational", "Frictional", "Electrostatic"], answer: "Gravitational" },
+                { question: "What is the boiling point of water at standard pressure?", options: ["0°C", "100°C", "50°C", "200°C"], answer: "100°C" },
+                { question: "Which type of energy is stored in a stretched spring?", options: ["Kinetic", "Potential", "Thermal", "Chemical"], answer: "Potential" },
+                { question: "What is the main source of energy for a food chain?", options: ["Water", "Soil", "Sunlight", "Air"], answer: "Sunlight" },
+                { question: "Which organ in the human body pumps blood?", options: ["Lungs", "Heart", "Liver", "Kidney"], answer: "Heart" },
+                { question: "What is the SI unit of force?", options: ["Newton", "Joule", "Watt", "Pascal"], answer: "Newton" },
+                { question: "Which gas is used by plants during photosynthesis?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Helium"], answer: "Carbon Dioxide" },
+                { question: "What is the process of changing a liquid to a gas?", options: ["Condensation", "Evaporation", "Freezing", "Melting"], answer: "Evaporation" },
+                { question: "Which type of rock is formed from cooled magma?", options: ["Sedimentary", "Metamorphic", "Igneous", "Fossil"], answer: "Igneous" },
+                { question: "What is the main function of red blood cells?", options: ["Fight infection", "Carry oxygen", "Clot blood", "Digest food"], answer: "Carry oxygen" },
+                { question: "Which planet is closest to the Sun?", options: ["Venus", "Earth", "Mercury", "Mars"], answer: "Mercury" },
+                { question: "What is the formula for density?", options: ["Mass/Volume", "Volume/Mass", "Mass × Volume", "Mass + Volume"], answer: "Mass/Volume" },
+                { question: "Which type of energy is produced by vibrating objects?", options: ["Light", "Sound", "Heat", "Electrical"], answer: "Sound" },
+                { question: "What is the primary source of energy for Earth's climate system?", options: ["Sun", "Moon", "Wind", "Ocean"], answer: "Sun" },
+                { question: "Which gas is most abundant in Earth's atmosphere?", options: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Argon"], answer: "Nitrogen" },
+                { question: "What is the process by which plants make their food?", options: ["Respiration", "Photosynthesis", "Digestion", "Fermentation"], answer: "Photosynthesis" },
+                { question: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], answer: "Mars" },
+                { question: "What is the unit of electric current?", options: ["Volt", "Ampere", "Ohm", "Watt"], answer: "Ampere" },
+                { question: "Which part of the cell contains genetic material?", options: ["Cytoplasm", "Nucleus", "Mitochondria", "Ribosome"], answer: "Nucleus" },
+                { question: "What is the chemical symbol for water?", options: ["H2O", "CO2", "O2", "N2"], answer: "H2O" },
+                { question: "Which force keeps planets in orbit around the Sun?", options: ["Magnetic", "Gravitational", "Frictional", "Electrostatic"], answer: "Gravitational" },
+                { question: "What is the boiling point of water at standard pressure?", options: ["0°C", "100°C", "50°C", "200°C"], answer: "100°C" },
+                { question: "Which type of energy is stored in a stretched spring?", options: ["Kinetic", "Potential", "Thermal", "Chemical"], answer: "Potential" }
+            ],
+            maths: [
+                { question: "What is 25% of 200?", options: ["50", "25", "100", "75"], answer: "50" },
+                { question: "Solve for x: 2x + 3 = 11", options: ["4", "5", "6", "7"], answer: "4" },
+                { question: "What is the value of π (pi) to two decimal places?", options: ["3.14", "3.16", "3.12", "3.18"], answer: "3.14" },
+                { question: "What is the area of a rectangle with length 5 cm and width 3 cm?", options: ["15 cm²", "8 cm²", "10 cm²", "12 cm²"], answer: "15 cm²" },
+                { question: "What is the square root of 16?", options: ["2", "4", "8", "16"], answer: "4" },
+                { question: "What is 3/4 + 1/4?", options: ["1", "2", "3/4", "1/2"], answer: "1" },
+                { question: "What is the perimeter of a square with side length 4 cm?", options: ["12 cm", "16 cm", "8 cm", "20 cm"], answer: "16 cm" },
+                { question: "What is 7 × 8?", options: ["54", "56", "58", "60"], answer: "56" },
+                { question: "What is the value of 2³?", options: ["6", "8", "10", "12"], answer: "8" },
+                { question: "What is the LCM of 6 and 8?", options: ["12", "24", "16", "18"], answer: "24" },
+                { question: "What is 0.75 as a fraction?", options: ["3/4", "1/2", "1/4", "2/3"], answer: "3/4" },
+                { question: "What is the value of 5! (factorial)?", options: ["120", "60", "100", "150"], answer: "120" },
+                { question: "What is the circumference of a circle with radius 7 cm? (Use π = 22/7)", options: ["44 cm", "22 cm", "14 cm", "28 cm"], answer: "44 cm" },
+                { question: "Solve: 3x - 9 = 0", options: ["3", "6", "9", "12"], answer: "3" },
+                { question: "What is 15% of 80?", options: ["10", "12", "15", "20"], answer: "12" },
+                { question: "What is the value of 4 + 6 ÷ 2?", options: ["5", "7", "10", "12"], answer: "7" },
+                { question: "What is the HCF of 12 and 18?", options: ["3", "6", "9", "12"], answer: "6" },
+                { question: "What is 2/5 of 25?", options: ["5", "10", "15", "20"], answer: "10" },
+                { question: "What is the area of a triangle with base 6 cm and height 4 cm?", options: ["12 cm²", "24 cm²", "10 cm²", "8 cm²"], answer: "12 cm²" },
+                { question: "What is 1000 ÷ 25?", options: ["40", "50", "60", "70"], answer: "40" },
+                { question: "What is 25% of 200?", options: ["50", "25", "100", "75"], answer: "50" },
+                { question: "Solve for x: 2x + 3 = 11", options: ["4", "5", "6", "7"], answer: "4" },
+                { question: "What is the value of π (pi) to two decimal places?", options: ["3.14", "3.16", "3.12", "3.18"], answer: "3.14" },
+                { question: "What is the area of a rectangle with length 5 cm and width 3 cm?", options: ["15 cm²", "8 cm²", "10 cm²", "12 cm²"], answer: "15 cm²" },
+                { question: "What is the square root of 16?", options: ["2", "4", "8", "16"], answer: "4" },
+                { question: "What is 3/4 + 1/4?", options: ["1", "2", "3/4", "1/2"], answer: "1" },
+                { question: "What is the perimeter of a square with side length 4 cm?", options: ["12 cm", "16 cm", "8 cm", "20 cm"], answer: "16 cm" },
+                { question: "What is 7 × 8?", options: ["54", "56", "58", "60"], answer: "56" },
+                { question: "What is the value of 2³?", options: ["6", "8", "10", "12"], answer: "8" },
+                { question: "What is the LCM of 6 and 8?", options: ["12", "24", "16", "18"], answer: "24" }
+            ],
+            english: [
+                { question: "What is the synonym of 'happy'?", options: ["Sad", "Joyful", "Angry", "Tired"], answer: "Joyful" },
+                { question: "Which word is a noun?", options: ["Run", "Big", "Table", "Quickly"], answer: "Table" },
+                { question: "What is the past tense of 'go'?", options: ["Went", "Gone", "Going", "Goes"], answer: "Went" },
+                { question: "Which sentence is correct?", options: ["She run fast.", "She runs fast.", "She running fast.", "She runs fastly."], answer: "She runs fast." },
+                { question: "What is the opposite of 'big'?", options: ["Large", "Small", "Huge", "Tall"], answer: "Small" },
+                { question: "Which is a pronoun?", options: ["Table", "He", "Run", "Big"], answer: "He" },
+                { question: "What is the plural of 'child'?", options: ["Childs", "Children", "Childes", "Child"], answer: "Children" },
+                { question: "Which word is an adjective?", options: ["Run", "Table", "Big", "Quickly"], answer: "Big" },
+                { question: "What is the correct spelling?", options: ["Recieve", "Receive", "Receeve", "Recive"], answer: "Receive" },
+                { question: "Which is a conjunction?", options: ["And", "Table", "Run", "Big"], answer: "And" },
+                { question: "What is the synonym of 'quick'?", options: ["Slow", "Fast", "Big", "Small"], answer: "Fast" },
+                { question: "What is the past tense of 'eat'?", options: ["Eaten", "Ate", "Eats", "Eating"], answer: "Ate" },
+                { question: "Which sentence is in the present tense?", options: ["She walked.", "She walks.", "She will walk.", "She was walking."], answer: "She walks." },
+                { question: "What is the antonym of 'hot'?", options: ["Warm", "Cold", "Burning", "Heated"], answer: "Cold" },
+                { question: "Which is an adverb?", options: ["Table", "Quickly", "Big", "Run"], answer: "Quickly" },
+                { question: "What is the plural of 'mouse'?", options: ["Mouses", "Mice", "Mouse", "Mices"], answer: "Mice" },
+                { question: "Which word is a verb?", options: ["Table", "Big", "Run", "Quickly"], answer: "Run" },
+                { question: "What is the correct spelling?", options: ["Seperate", "Separate", "Separete", "Seperete"], answer: "Separate" },
+                { question: "Which is a preposition?", options: ["Table", "On", "Run", "Big"], answer: "On" },
+                { question: "What is the synonym of 'beautiful'?", options: ["Ugly", "Pretty", "Big", "Small"], answer: "Pretty" },
+                { question: "What is the synonym of 'happy'?", options: ["Sad", "Joyful", "Angry", "Tired"], answer: "Joyful" },
+                { question: "Which word is a noun?", options: ["Run", "Big", "Table", "Quickly"], answer: "Table" },
+                { question: "What is the past tense of 'go'?", options: ["Went", "Gone", "Going", "Goes"], answer: "Went" },
+                { question: "Which sentence is correct?", options: ["She run fast.", "She runs fast.", "She running fast.", "She runs fastly."], answer: "She runs fast." },
+                { question: "What is the opposite of 'big'?", options: ["Large", "Small", "Huge", "Tall"], answer: "Small" },
+                { question: "Which is a pronoun?", options: ["Table", "He", "Run", "Big"], answer: "He" },
+                { question: "What is the plural of 'child'?", options: ["Childs", "Children", "Childes", "Child"], answer: "Children" },
+                { question: "Which word is an adjective?", options: ["Run", "Table", "Big", "Quickly"], answer: "Big" },
+                { question: "What is the correct spelling?", options: ["Recieve", "Receive", "Receeve", "Recive"], answer: "Receive" },
+                { question: "Which is a conjunction?", options: ["And", "Table", "Run", "Big"], answer: "And" }
+            ],
+            social: [
+                { question: "What is the capital city of Ghana?", options: ["Kumasi", "Accra", "Tamale", "Takoradi"], answer: "Accra" },
+                { question: "Which river is the longest in Ghana?", options: ["Volta", "Tano", "Pra", "Densu"], answer: "Volta" },
+                { question: "Who was the first president of Ghana?", options: ["Kwame Nkrumah", "J.A. Kufuor", "J.J. Rawlings", "J.E.A. Mills"], answer: "Kwame Nkrumah" },
+                { question: "What is the main religion in Ghana?", options: ["Christianity", "Islam", "Traditional", "Hinduism"], answer: "Christianity" },
+                { question: "Which country colonized Ghana?", options: ["France", "Britain", "Portugal", "Germany"], answer: "Britain" },
+                { question: "What is the currency of Ghana?", options: ["Cedi", "Naira", "Dollar", "Pound"], answer: "Cedi" },
+                { question: "Which ethnic group is associated with the Ashanti Region?", options: ["Ewe", "Ga", "Akan", "Dagomba"], answer: "Akan" },
+                { question: "What is the name of Ghana's independence day?", options: ["March 6", "July 1", "October 9", "December 31"], answer: "March 6" },
+                { question: "Which is the largest region in Ghana by land area?", options: ["Northern", "Ashanti", "Greater Accra", "Volta"], answer: "Northern" },
+                { question: "What is the main export of Ghana?", options: ["Cocoa", "Gold", "Oil", "Timber"], answer: "Cocoa" },
+                { question: "Which ocean borders Ghana?", options: ["Pacific", "Indian", "Atlantic", "Arctic"], answer: "Atlantic" },
+                { question: "What is the system of government in Ghana?", options: ["Monarchy", "Democracy", "Dictatorship", "Oligarchy"], answer: "Democracy" },
+                { question: "Which festival is celebrated by the Ga people?", options: ["Homowo", "Akwambo", "Ohum", "Damba"], answer: "Homowo" },
+                { question: "What is the name of the highest court in Ghana?", options: ["Supreme Court", "High Court", "Appeals Court", "Circuit Court"], answer: "Supreme Court" },
+                { question: "Which country is to the east of Ghana?", options: ["Togo", "Burkina Faso", "Ivory Coast", "Nigeria"], answer: "Togo" },
+                { question: "What is the capital city of Ghana?", options: ["Kumasi", "Accra", "Tamale", "Takoradi"], answer: "Accra" },
+                { question: "Which river is the longest in Ghana?", options: ["Volta", "Tano", "Pra", "Densu"], answer: "Volta" },
+                { question: "Who was the first president of Ghana?", options: ["Kwame Nkrumah", "J.A. Kufuor", "J.J. Rawlings", "J.E.A. Mills"], answer: "Kwame Nkrumah" },
+                { question: "What is the main religion in Ghana?", options: ["Christianity", "Islam", "Traditional", "Hinduism"], answer: "Christianity" },
+                { question: "Which country colonized Ghana?", options: ["France", "Britain", "Portugal", "Germany"], answer: "Britain" },
+                { question: "What is the currency of Ghana?", options: ["Cedi", "Naira", "Dollar", "Pound"], answer: "Cedi" },
+                { question: "Which ethnic group is associated with the Ashanti Region?", options: ["Ewe", "Ga", "Akan", "Dagomba"], answer: "Akan" },
+                { question: "What is the name of Ghana's independence day?", options: ["March 6", "July 1", "October 9", "December 31"], answer: "March 6" },
+                { question: "Which is the largest region in Ghana by land area?", options: ["Northern", "Ashanti", "Greater Accra", "Volta"], answer: "Northern" },
+                { question: "What is the main export of Ghana?", options: ["Cocoa", "Gold", "Oil", "Timber"], answer: "Cocoa" },
+                { question: "Which ocean borders Ghana?", options: ["Pacific", "Indian", "Atlantic", "Arctic"], answer: "Atlantic" },
+                { question: "What is the system of government in Ghana?", options: ["Monarchy", "Democracy", "Dictatorship", "Oligarchy"], answer: "Democracy" },
+                { question: "Which festival is celebrated by the Ga people?", options: ["Homowo", "Akwambo", "Ohum", "Damba"], answer: "Homowo" },
+                { question: "What is the name of the highest court in Ghana?", options: ["Supreme Court", "High Court", "Appeals Court", "Circuit Court"], answer: "Supreme Court" },
+                { question: "Which country is to the east of Ghana?", options: ["Togo", "Burkina Faso", "Ivory Coast", "Nigeria"], answer: "Togo" }
+            ]
+        };
+
+        const subjectSelect = document.getElementById('subject');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultDiv = document.getElementById('result');
+
+        function loadQuestions() {
+            const subject = subjectSelect.value;
+            quizContainer.innerHTML = '';
+            questions[subject].forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'bg-white p-4 rounded-md shadow-md';
+                questionDiv.innerHTML = `
+                    <p class="font-medium mb-2">${index + 1}. ${q.question}</p>
+                    <div class="space-y-2">
+                        ${q.options.map((option, i) => `
+                            <button class="w-full text-left p-2 border rounded-md hover:bg-gray-200 option-btn" data-answer="${option === q.answer}" data-option="${option}">
+                                ${String.fromCharCode(65 + i)}. ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <p class="mt-2 hidden text-green-600 correct">Correct!</p>
+                    <p class="mt-2 hidden text-red-600 incorrect">Incorrect! The correct answer is: ${q.answer}</p>
+                `;
+                quizContainer.appendChild(questionDiv);
+            });
+
+            document.querySelectorAll('.option-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const questionDiv = button.parentElement.parentElement;
+                    const correct = button.dataset.answer === 'true';
+                    const correctP = questionDiv.querySelector('.correct');
+                    const incorrectP = questionDiv.querySelector('.incorrect');
+                    if (correct) {
+                        correctP.classList.remove('hidden');
+                        incorrectP.classList.add('hidden');
+                    } else {
+                        incorrectP.classList.remove('hidden');
+                        correctP.classList.add('hidden');
+                    }
+                    questionDiv.querySelectorAll('.option-btn').forEach(btn => {
+                        btn.disabled = true;
+                        if (btn.dataset.answer === 'true') {
+                            btn.classList.add('bg-green-200');
+                        }
+                    });
+                });
+            });
+        }
+
+        subjectSelect.addEventListener('change', loadQuestions);
+        loadQuestions();
+    </script>
+</body>
+</html>
+      
   <script>
     function checkAnswer(element, correctAnswer) {
       const parentQuestion = element.parentElement.previousElementSibling;
