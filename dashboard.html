@@ -2340,6 +2340,42 @@ footer {
       <div class="option" onclick="checkAnswer(this, 'Honesty')">Fear</div>
     </div>
   </div>
+      
+  <script>
+    function checkAnswer(element, correctAnswer) {
+      const parentQuestion = element.parentElement.previousElementSibling;
+      const feedback = document.createElement('div');
+      feedback.className = 'feedback';
+      
+      if (element.textContent === correctAnswer) {
+        element.classList.add('correct');
+        feedback.textContent = 'Correct!';
+        feedback.style.color = 'green';
+      } else {
+        element.classList.add('wrong');
+        feedback.textContent = `Wrong! The correct answer is ${correctAnswer}.`;
+        feedback.style.color = 'red';
+      }
+      
+      // Disable further clicks on options for this question
+      const options = element.parentElement.querySelectorAll('.option');
+      options.forEach(opt => {
+        opt.onclick = null;
+        opt.style.cursor = 'default';
+      });
+      
+      // Remove previous feedback if any
+      const existingFeedback = element.parentElement.nextElementSibling;
+      if (existingFeedback && existingFeedback.className === 'feedback') {
+        existingFeedback.remove();
+      }
+      
+      // Add new feedback
+      element.parentElement.insertAdjacentElement('afterend', feedback);
+    }
+  </script>
+</body>
+</html>
 <script type="text/javascript">
         var gk_isXlsx = false;
         var gk_xlsxFileLookup = {};
