@@ -695,6 +695,236 @@ footer {
     </div>
 </body>
 </html>
+        <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Primary English Book</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .cover {
+            text-align: center;
+            padding: 40px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .cover h1 {
+            font-size: 48px;
+            margin: 0;
+        }
+        .cover p {
+            font-size: 24px;
+        }
+        h2 {
+            color: #4CAF50;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 5px;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .alphabet, .vocabulary, .sentences, .activities {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        img {
+            max-width: 100px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        .activity {
+            font-style: italic;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cover Page -->
+        <div class="cover">
+            <h1>Basic Primary English</h1>
+            <p>A Fun Guide to Learning English</p>
+            <p>Faith Mastermind Academy</p>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="section">
+            <h2>Contents</h2>
+            <ul>
+                <li><a href="#alphabet">1. The Alphabet</a></li>
+                <li><a href="#vocabulary">2. Basic Vocabulary</a></li>
+                <li><a href="#sentences">3. Simple Sentences</a></li>
+                <li><a href="#activities">4. Fun Activities</a></li>
+            </ul>
+        </div>
+
+        <!-- Section 1: The Alphabet -->
+        <div class="section alphabet" id="alphabet">
+            <h2>1. The Alphabet</h2>
+            <p>Learn the 26 letters of the English alphabet!</p>
+            <table>
+                <tr>
+                    <th>Letter</th>
+                    <th>Uppercase</th>
+                    <th>Lowercase</th>
+                    <th>Example Word</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>A</td>
+                    <td>a</td>
+                    <td>Apple</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>B</td>
+                    <td>b</td>
+                    <td>Ball</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>C</td>
+                    <td>c</td>
+                    <td>Cat</td>
+                </tr>
+                <!-- Add more letters as needed -->
+            </table>
+            <p><strong>Tip:</strong> Practice writing each letter and saying its sound!</p>
+        </div>
+
+        <!-- Section 2: Basic Vocabulary -->
+        <div class="section vocabulary" id="vocabulary">
+            <h2>2. Basic Vocabulary</h2>
+            <p>Learn common words to build your English skills.</p>
+            <h3>Animals</h3>
+            <ul>
+                <li>Dog <img src="https://via.placeholder.com/100?text=Dog" alt="Dog"></li>
+                <li>Cat <img src="https://via.placeholder.com/100?text=Cat" alt="Cat"></li>
+                <li>Bird <img src="https://via.placeholder.com/100?text=Bird" alt="Bird"></li>
+            </ul>
+            <h3>Colors</h3>
+            <ul>
+                <li>Red</li>
+                <li>Blue</li>
+                <li>Yellow</li>
+            </ul>
+            <p><strong>Tip:</strong> Try naming objects around you using these words!</p>
+        </div>
+
+        <!-- Section 3: Simple Sentences -->
+        <div class="section sentences" id="sentences">
+            <h2>3. Simple Sentences</h2>
+            <p>Learn how to make simple sentences in English.</p>
+            <table>
+                <tr>
+                    <th>Sentence</th>
+                    <th>Meaning</th>
+                </tr>
+                <tr>
+                    <td>I have a dog.</td>
+                    <td>I own a dog.</td>
+                </tr>
+                <tr>
+                    <td>The cat is black.</td>
+                    <td>The cat's color is black.</td>
+                </tr>
+                <tr>
+                    <td>I like to play.</td>
+                    <td>I enjoy playing.</td>
+                </tr>
+            </table>
+            <p><strong>Tip:</strong> Practice saying these sentences out loud!</p>
+        </div>
+
+        <!-- Section 4: Fun Activities -->
+        <div class="section activities" id="activities">
+            <h2>4. Fun Activities</h2>
+            <p>Try these activities to practice your English!</p>
+            <div class="activity">
+                <h3>Activity 1: Alphabet Hunt</h3>
+                <p>Find objects in your house that start with each letter of the alphabet.</p>
+            </div>
+            <div class="activity">
+                <h3>Activity 2: Color Game</h3>
+                <p>Name 5 objects for each color you learned.</p>
+            </div>
+            <div class="activity">
+                <h3>Activity 3: Sentence Builder</h3>
+                <p>Make your own sentences using the words you learned.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
         
 <div class="menu" id="menu">
   <div onclick="showContent('about')">ABOUT</div>
